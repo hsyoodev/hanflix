@@ -1,0 +1,11 @@
+.hanflix-header {
+  height: 80px;
+}
+
+.hanflix-main {
+  height: calc(100vh - 200px);
+}
+
+.hanflix-footer {
+  height: 120px;
+}
