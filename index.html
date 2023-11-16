@@ -16,20 +16,42 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <!-- Merienda font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merienda:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
     <!-- file -->
     <link rel="stylesheet" href="./css/common.css" />
   </head>
   <body>
     <div class="container">
       <h1 class="d-none">HANFLIX</h1>
-      <header class="hanflix-header"></header>
+      <header class="hanflix-header">
+        <nav class="navbar border-bottom">
+          <div class="container-fluid">
+            <a class="navbar-brand">HANFLIX</a>
+            <form class="d-flex" role="search">
+              <input
+                class="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+              />
+              <button class="btn btn-outline-success" type="submit">
+                Search
+              </button>
+            </form>
+          </div>
+        </nav>
+      </header>
       <main class="hanflix-main">
         <article>
           <h2 class="d-none">홈 본문</h2>
-          <section>
+          <section class="pt-5">
             <h3 class="d-none">TOP 3</h3>
           </section>
-          <section>
+          <section class="pt-5">
             <h3 class="d-none">일별 박스오피스</h3>
           </section>
           <section>

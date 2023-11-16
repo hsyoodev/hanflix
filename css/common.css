@@ -9,3 +9,11 @@
 .hanflix-footer {
   height: 120px;
 }
+
+.navbar-brand {
+  font-family: "Merienda", cursive;
+  font-style: italic;
+  background: linear-gradient(to right top, #861657, #ffa69e);
+  color: transparent;
+  -webkit-background-clip: text;
+}
