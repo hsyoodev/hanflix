@@ -1,16 +1,16 @@
 .hanflix-header {
-  height: 120px;
+  height: 80px;
 }
 
 .hanflix-main {
-  min-height: calc(100vh - 240px);
+  min-height: calc(100vh - 200px);
 }
 
 .hanflix-footer {
   height: 120px;
 }
 
-.navbar-brand {
+#logo {
   font-family: "Merienda", cursive;
   font-style: italic;
   background: linear-gradient(to right top, #861657, #ffa69e);
