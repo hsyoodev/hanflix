@@ -1,9 +1,9 @@
 .hanflix-header {
-  height: 80px;
+  height: 120px;
 }
 
 .hanflix-main {
-  height: calc(100vh - 200px);
+  min-height: calc(100vh - 240px);
 }
 
 .hanflix-footer {
@@ -17,3 +17,15 @@
   color: transparent;
   -webkit-background-clip: text;
 }
+
+/* .card {
+  height: 380px;
+} */
+
+.card-img-top {
+  height: 350px;
+}
+
+/* .row {
+  height: 380px;
+} */
