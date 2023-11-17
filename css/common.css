@@ -10,7 +10,7 @@
   height: 120px;
 }
 
-#logo {
+.logo {
   font-family: "Merienda", cursive;
   font-style: italic;
   background: linear-gradient(to right top, #861657, #ffa69e);
