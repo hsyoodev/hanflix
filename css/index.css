@@ -1,3 +1,13 @@
 .slide {
-  height: 50vh;
+  height: 55vh;
+}
+
+.card-poster {
+  width: 210px;
+  height: 300px;
+}
+
+.section-title-before,
+.section-title-after {
+  height: 1px;
 }
