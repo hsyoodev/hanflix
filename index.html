@@ -66,20 +66,43 @@
           <h2 class="d-none">홈 본문</h2>
           <section>
             <h3 class="d-none">주간 TOP 3</h3>
-            <div id="carouselExample" class="carousel slide">
-              <div
-                id="weekly-top3-box"
-                class="carousel-inner placeholder-glow object-fit-fill"
-              >
-                <div class="carousel-item placeholder h-100 active">
+            <div
+              id="carouselExampleAutoplaying"
+              class="carousel slide carousel-dark"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-indicators">
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleAutoplaying"
+                  data-bs-slide-to="0"
+                  class="active"
+                  aria-current="true"
+                  aria-label="Slide 1"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleAutoplaying"
+                  data-bs-slide-to="1"
+                  aria-label="Slide 2"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#carouselExampleAutoplaying"
+                  data-bs-slide-to="2"
+                  aria-label="Slide 3"
+                ></button>
+              </div>
+              <div id="weekly-top3-box" class="carousel-inner placeholder-glow">
+                <div class="carousel-item placeholder h-100">
                   <img class="d-block h-100 w-50 m-auto" alt="Movie Poster" />
                   <a href="#" class="stretched-link"></a>
                 </div>
-                <div class="carousel-item placeholder h-100 active">
+                <div class="carousel-item placeholder h-100">
                   <img class="d-block h-100 w-50 m-auto" alt="Movie Poster" />
                   <a href="#" class="stretched-link"></a>
                 </div>
-                <div class="carousel-item placeholder h-100 active">
+                <div class="carousel-item placeholder h-100">
                   <img class="d-block h-100 w-50 m-auto" alt="Movie Poster" />
                   <a href="#" class="stretched-link"></a>
                 </div>
@@ -87,7 +110,7 @@
               <button
                 class="carousel-control-prev"
                 type="button"
-                data-bs-target="#carouselExample"
+                data-bs-target="#carouselExampleAutoplaying"
                 data-bs-slide="prev"
               >
                 <span
@@ -99,7 +122,7 @@
               <button
                 class="carousel-control-next"
                 type="button"
-                data-bs-target="#carouselExample"
+                data-bs-target="#carouselExampleAutoplaying"
                 data-bs-slide="next"
               >
                 <span

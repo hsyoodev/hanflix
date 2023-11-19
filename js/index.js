@@ -20,6 +20,7 @@ const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey
   const weeklyBoxOffices = await getWeeklyBoxOffices();
   for (let i = 0; i < 5; i++) {
     const weeklyBoxOffice = weeklyBoxOffices[i];
+    const rank = weeklyBoxOffice.rank;
     const movieCd = weeklyBoxOffice.movieCd;
 
     const kobisMovieDetails = await getKobisMovieDetails(movieCd);
@@ -36,17 +37,8 @@ const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey
     const id = kmdbMovieDetails.DOCID;
 
     if (i < 3) {
-      weeklyTop3HTML += `
-                        <div class="carousel-item h-100 my-2 bg-dark bg-gradient ${
-                          i == 0 ? "active" : ""
-                        }">
-                          <img
-                          src="${poster}"
-                          class="d-block h-100 w-75 m-auto"
-                          alt="Movie Poster"
-                          />
-                          <a href="./details.html?id=${id}" class="stretched-link"></a>
-                        </div>`;
+      const isActive = i == 0;
+      weeklyTop3HTML += getWeeklyTop3HTML(isActive, poster, rank, id);
     }
     dailyChartHTML += getDailyChartHTML(poster, movieName, releaseDate, id);
   }
@@ -110,4 +102,22 @@ function getDailyChartHTML(poster, movieName, releaseDate, id) {
                             </div>
                           </div>`;
   return dailyChartHTML;
+}
+
+function getWeeklyTop3HTML(isActive, poster, rank, id) {
+  const weeklyTop3HTML = `
+                        <div class="carousel-item h-100 my-2 ${
+                          isActive ? "active" : ""
+                        }">
+                          <img
+                          src="${poster}"
+                          class="d-block h-75 m-auto"
+                          alt="Movie Poster"
+                          />
+                          <div class="carousel-caption">
+                            <h2 class="fw-bold pb-3">주간 박스오피스 TOP ${rank}</h2>
+                          </div>
+                          <a href="./details.html?id=${id}" class="stretched-link"></a>
+                        </div>`;
+  return weeklyTop3HTML;
 }
