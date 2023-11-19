@@ -3,6 +3,18 @@
   height: 300px;
 }
 
+.card-body {
+  width: 210px;
+}
+
+.card {
+  transition: all 0.7s;
+}
+
+.card:hover {
+  scale: 1.05;
+}
+
 .section-title-before,
 .section-title-after {
   height: 1px;
