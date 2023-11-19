@@ -33,7 +33,7 @@ const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey
 
     const kmdbMovieDetails = await getKmdbMovieDetails(movieName, peopleName);
     const posters = kmdbMovieDetails.posters.split("|");
-    const poster = posters[0];
+    const poster = posters[0].replace("http", "https");
     const id = kmdbMovieDetails.DOCID;
 
     if (i < 3) {
