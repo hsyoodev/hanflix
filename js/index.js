@@ -7,7 +7,7 @@ const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json`;
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
 const KMDB_BASE_UTL =
-  "http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
+  "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
 const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
 
 (async () => {
