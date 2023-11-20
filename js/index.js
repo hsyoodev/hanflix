@@ -1,8 +1,25 @@
+const today = new Date();
+const yesterday = new Date();
+const dayOfWeeks = ["일", "월", "화", "수", "목", "금"];
+yesterday.setDate(today.getDate() - 1);
+
+const year = yesterday.getFullYear();
+let month = yesterday.getMonth() + 1;
+if (month < 10) {
+  month = "0" + month;
+}
+let date = yesterday.getDate();
+if (date < 10) {
+  date = "0" + date;
+}
+const day = yesterday.getDay();
+
 // kobis api
-const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
+const KOBIS_API_KEY = "f5eef3421c602c6cb7ea224104795888";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
 const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json`;
-const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json`;
+const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${year}${month}${date}&itemPerPage=5`;
+const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
 
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
@@ -10,57 +27,61 @@ const KMDB_BASE_UTL =
   "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
 const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
 
-(async () => {
-  const weeklyTop3Box = document.querySelector("#weekly-top3-box");
-  const dailyChartBox = document.querySelector("#daily-chart-box");
+// setWeeklyTop3();
+setDailyBoxOffice();
 
-  let weeklyTop3HTML = "";
-  let dailyChartHTML = "";
+async function setDailyBoxOffice() {
+  const dailyBoxOfficeContainer = document.querySelector(
+    "#daily-box-office-container"
+  );
+  const dailyBoxOfficeTargetDate = document.querySelector(
+    "#daily-box-office-target-date"
+  );
+  dailyBoxOfficeTargetDate.innerText = `${year}년 ${month}월 ${date}일 (${dayOfWeeks[day]}) 기준`;
+  const dailyBoxOffices = await getKobisDailyBoxOffices();
 
-  const weeklyBoxOffices = await getWeeklyBoxOffices();
-  for (let i = 0; i < 5; i++) {
-    const weeklyBoxOffice = weeklyBoxOffices[i];
-    const rank = weeklyBoxOffice.rank;
-    const movieCd = weeklyBoxOffice.movieCd;
-
-    const kobisMovieDetails = await getKobisMovieDetails(movieCd);
-    const movieName = kobisMovieDetails.movieNm;
-    const peopleName = kobisMovieDetails.actors[0].peopleNm;
-    const year = kobisMovieDetails.openDt.slice(0, 4);
-    const month = kobisMovieDetails.openDt.slice(4, 6);
-    const day = kobisMovieDetails.openDt.slice(6, 8);
-    const releaseDate = `${year}-${month}-${day}`;
-
-    const kmdbMovieDetails = await getKmdbMovieDetails(movieName, peopleName);
-    const posters = kmdbMovieDetails.posters.split("|");
-    const poster = posters[0].replace("http", "https");
-    const id = kmdbMovieDetails.DOCID;
-
-    if (i < 3) {
-      const isActive = i == 0;
-      weeklyTop3HTML += getWeeklyTop3HTML(isActive, poster, rank, id);
-    }
-    dailyChartHTML += getDailyChartHTML(poster, movieName, releaseDate, id);
+  let dailyBoxOfficeHTML = "";
+  for (const dailyBoxOffice of dailyBoxOffices) {
+    const kobisMovieDetails = await getKobisMovieDetails(dailyBoxOffice);
+    const kmdbMovieDetails = await getKmdbMovieDetails(kobisMovieDetails);
+    dailyBoxOfficeHTML += getDailyBoxOfficeHTML(
+      dailyBoxOffice,
+      kobisMovieDetails,
+      kmdbMovieDetails
+    );
   }
-  weeklyTop3Box.innerHTML = weeklyTop3HTML;
-  dailyChartBox.innerHTML = dailyChartHTML;
-})();
+  dailyBoxOfficeContainer.innerHTML = dailyBoxOfficeHTML;
+}
 
-async function getWeeklyBoxOffices() {
+async function getKobisDailyBoxOffices() {
+  const url = KOBIS_DAILY_BOXOFFICE_URL;
+  const json = await getJson(url);
+  const dailyBoxOffices = json.boxOfficeResult.dailyBoxOfficeList;
+  return dailyBoxOffices;
+}
+
+async function getKobisWeeklyBoxOffices() {
   const url = `${KOBIS_WEEKLY_BOXOFFICE_URL}?key=${KOBIS_API_KEY}&targetDt=20231112&weekGb=0`;
   const json = await getJson(url);
   const weeklyBoxOfficeList = json.boxOfficeResult.weeklyBoxOfficeList;
   return weeklyBoxOfficeList;
 }
 
-async function getKobisMovieDetails(movieCd) {
-  const url = `${KOBIS_MOVIE_DETAILS_URL}?&key=${KOBIS_API_KEY}&movieCd=${movieCd}`;
+async function getKobisMovieDetails(dailyBoxOffice) {
+  const movieCd = dailyBoxOffice.movieCd;
+  const url = `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`;
   const json = await getJson(url);
   const kobisMovieDetails = json.movieInfoResult.movieInfo;
   return kobisMovieDetails;
 }
 
-async function getKmdbMovieDetails(movieName, peopleName) {
+async function getKmdbMovieDetails(kobisMovieDetails) {
+  const movieName = kobisMovieDetails.movieNm;
+  let peopleName = "";
+  const actors = kobisMovieDetails.actors;
+  if (actors.length != 0) {
+    peopleName = actors[0].peopleNm;
+  }
   const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&actor=${peopleName}`;
   const json = await getJson(url);
   const kmdbMovieDetails = json.Data[0].Result[0];
@@ -73,35 +94,70 @@ async function getJson(url) {
   return json;
 }
 
-function getDailyChartHTML(poster, movieName, releaseDate, id) {
-  const dailyChartHTML = `<div class="col pt-3">
-                            <div class="card border-0 align-items-center">
-                              <img
-                                src="${poster}"
-                                class="card-img-top rounded bg-secondary card-poster"
-                                alt="Movie Poster"
-                              />
-                              <div class="card-body">
-                                <dl>
-                                  <dt
-                                    class="card-title overflow-hidden text-nowrap text-truncate"
-                                  >
-                                    ${movieName}
-                                  </dt>
-                                  <dd>
-                                    <dl class="row row-cols-auto small">
-                                      <dt class="col">
-                                        개봉일
-                                      </dt>
-                                      <dd class="col">${releaseDate}</dd>
-                                    </dl>
-                                  </dd>
-                                </dl>
-                              </div>                      
-                              <a href="./details.html?id=${id}" class="stretched-link"></a>
-                            </div>
-                          </div>`;
-  return dailyChartHTML;
+async function setWeeklyTop3() {
+  const weeklyTop3Box = document.querySelector("#weekly-top3-box");
+  const weeklyBoxOffices = await getKobisWeeklyBoxOffices();
+
+  let weeklyTop3HTML = "";
+  for (let i = 0; i < 3; i++) {
+    const weeklyBoxOffice = weeklyBoxOffices[i];
+    const rank = weeklyBoxOffice.rank;
+    const movieCd = weeklyBoxOffice.movieCd;
+
+    const kobisMovieDetails = await getKobisMovieDetails(movieCd);
+    const movieName = kobisMovieDetails.movieNm;
+    const peopleName = kobisMovieDetails.actors[0].peopleNm;
+
+    const kmdbMovieDetails = await getKmdbMovieDetails(movieName, peopleName);
+    const posters = kmdbMovieDetails.posters.split("|");
+    const poster = posters[0].replace("http", "https");
+    const id = kmdbMovieDetails.DOCID;
+
+    const isActive = i == 0;
+    weeklyTop3HTML += getWeeklyTop3HTML(isActive, poster, rank, id);
+  }
+
+  weeklyTop3Box.innerHTML = weeklyTop3HTML;
+}
+
+function getDailyBoxOfficeHTML(
+  dailyBoxOffice,
+  kobisMovieDetails,
+  kmdbMovieDetails
+) {
+  const movieName = kobisMovieDetails.movieNm;
+  const posters = kmdbMovieDetails.posters.split("|");
+  const poster = posters[0].replace("http", "https");
+  const releaseDate = dailyBoxOffice.openDt;
+  const id = kmdbMovieDetails.DOCID;
+  const rank = dailyBoxOffice.rank;
+  return `<div class="col pt-3">
+            <div class="card border-0">
+              <img
+                src="${poster}"
+                class="card-img-top rounded bg-secondary card-poster"
+                alt="Movie Poster"
+              ><p class="h1 position-absolute top-0 end-0 fw-bold bg-dark text-white">${rank}</p></img>
+              <div class="card-body">
+                <dl>
+                  <dt
+                    class="card-title overflow-hidden text-nowrap text-truncate"
+                  >
+                    ${movieName}
+                  </dt>
+                  <dd>
+                    <dl class="row row-cols-auto small">
+                      <dt class="col">
+                        개봉일
+                      </dt>
+                      <dd class="col">${releaseDate}</dd>
+                    </dl>
+                  </dd>
+                </dl>
+              </div>                      
+              <a href="./details.html?id=${id}" class="stretched-link"></a>
+            </div>
+          </div>`;
 }
 
 function getWeeklyTop3HTML(isActive, poster, rank, id) {
