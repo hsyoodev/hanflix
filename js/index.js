@@ -1,18 +1,18 @@
 // date
 const today = new Date();
 const yesterday = new Date();
+const oneWeekAgo = new Date();
+oneWeekAgo.setDate(today.getDate() - 7);
 yesterday.setDate(today.getDate() - 1);
-const year = yesterday.getFullYear();
-const month = yesterday.getMonth() + 1;
-const date = yesterday.getDate();
-const day = yesterday.getDay();
+const formatYesterDay = formatDate(yesterday).join("");
+const formatOneWeekAgo = formatDate(oneWeekAgo).join("");
 const dayOfWeeks = ["일", "월", "화", "수", "목", "금"];
 
 // kobis api
 const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
-const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=20231112&weekGb=0&itemPerPage=3`;
-const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${year}${month}${date}&itemPerPage=5`;
+const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${formatOneWeekAgo}&weekGb=0&itemPerPage=3`;
+const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${formatYesterDay}&itemPerPage=5`;
 const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
 
 // kmdb api
@@ -87,7 +87,10 @@ async function setDailyBoxOffice() {
   }
 
   dailyBoxOfficeBox.innerHTML = dailyBoxOfficeHTML;
-  dailyBoxOfficeTargetDate.innerText = `${year}년 ${month}월 ${date}일 (${dayOfWeeks[day]}) 기준`;
+  const [year, month, date] = formatDate(yesterday);
+  const day = yesterday.getDay();
+  const dayOfWeek = getDayOfWeek(day);
+  dailyBoxOfficeTargetDate.innerText = `${year}년 ${month}월 ${date}일 (${dayOfWeek}) 기준`;
   dailyBoxOfficeTargetDate.classList.remove("placeholder");
 }
 
@@ -161,4 +164,15 @@ async function getKmdbMovieDetails(kobisMovieDetails) {
   const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&actor=${peopleName}`;
   const json = await getJson(url);
   return json.Data[0].Result[0];
+}
+
+// date
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return [year, month, day];
+}
+function getDayOfWeek(day) {
+  return dayOfWeeks[day];
 }
