@@ -119,7 +119,7 @@ function getWeeklyBoxOfficeHTML(kobisWeeklyBoxOffice, kmdbMovieDetails) {
             alt="Movie Poster"
             />
             <div class="carousel-caption">
-              <h2 class="fw-bold pb-3">주간 박스오피스 TOP ${rank}</h2>
+              <p class="h2 fw-bold pb-3">주간 박스오피스 TOP ${rank}</p>
             </div>
             <a href="./details.html?id=${id}" class="stretched-link"></a>
           </div>`;
