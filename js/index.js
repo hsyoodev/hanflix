@@ -10,7 +10,7 @@ const dayOfWeeks = ["일", "월", "화", "수", "목", "금"];
 // kobis api
 const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
-const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json`;
+const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=20231112&weekGb=0&itemPerPage=3`;
 const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${year}${month}${date}&itemPerPage=5`;
 const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
 
@@ -21,52 +21,47 @@ const KMDB_BASE_UTL =
 const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
 
 // main logic
-// setWeeklyTop3();
-setDailyBoxOffice();
+setWeeklyBoxOffice();
+// setDailyBoxOffice();
 
-// weekly
-async function setWeeklyTop3() {
-  const weeklyTop3Box = document.querySelector("#weekly-top3-box");
-  const weeklyBoxOffices = await getKobisWeeklyBoxOffices();
+// weekly box office
+async function setWeeklyBoxOffice() {
+  const weeklyBoxOfficeBox = document.querySelector("#weekly-box-office-box");
+  const kobisWeeklyBoxOffices = await getKobisWeeklyBoxOffices();
 
-  let weeklyTop3HTML = "";
-  for (let i = 0; i < 3; i++) {
-    const weeklyBoxOffice = weeklyBoxOffices[i];
-    const rank = weeklyBoxOffice.rank;
-    const movieCd = weeklyBoxOffice.movieCd;
-
-    const kobisMovieDetails = await getKobisMovieDetails(movieCd);
-    const movieName = kobisMovieDetails.movieNm;
-    const peopleName = kobisMovieDetails.actors[0].peopleNm;
-
-    const kmdbMovieDetails = await getKmdbMovieDetails(movieName, peopleName);
-    const posters = kmdbMovieDetails.posters.split("|");
-    const poster = posters[0].replace("http", "https");
-    const id = kmdbMovieDetails.DOCID;
-
-    const isActive = i == 0;
-    weeklyTop3HTML += getWeeklyTop3HTML(isActive, poster, rank, id);
+  let weeklyBoxOfficeHTML = "";
+  for (const kobisWeeklyBoxOffice of kobisWeeklyBoxOffices) {
+    const movieCd = kobisWeeklyBoxOffice.movieCd;
+    const kobisMovieDetails = await getKobisMovieDetails(
+      `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
+    );
+    const kmdbMovieDetails = await getKmdbMovieDetails(kobisMovieDetails);
+    weeklyBoxOfficeHTML += getWeeklyBoxOfficeHTML(
+      kobisWeeklyBoxOffice,
+      kmdbMovieDetails
+    );
   }
 
-  weeklyTop3Box.innerHTML = weeklyTop3HTML;
+  weeklyBoxOfficeBox.innerHTML = weeklyBoxOfficeHTML;
 }
 
-function getWeeklyTop3HTML(isActive, poster, rank, id) {
-  const weeklyTop3HTML = `
-                        <div class="carousel-item h-100 my-2 ${
-                          isActive ? "active" : ""
-                        }">
-                          <img
-                          src="${poster}"
-                          class="d-block h-75 m-auto"
-                          alt="Movie Poster"
-                          />
-                          <div class="carousel-caption">
-                            <h2 class="fw-bold pb-3">주간 박스오피스 TOP ${rank}</h2>
-                          </div>
-                          <a href="./details.html?id=${id}" class="stretched-link"></a>
-                        </div>`;
-  return weeklyTop3HTML;
+function getWeeklyBoxOfficeHTML(kobisWeeklyBoxOffice, kmdbMovieDetails) {
+  const rank = kobisWeeklyBoxOffice.rank;
+  const isActive = rank == 1;
+  const posters = kmdbMovieDetails.posters.split("|");
+  const poster = posters[0].replace("http", "https");
+  const id = kmdbMovieDetails.DOCID;
+  return `<div class="carousel-item h-100 my-2 ${isActive ? "active" : ""}">
+            <img
+            src="${poster}"
+            class="d-block h-75 m-auto"
+            alt="Movie Poster"
+            />
+            <div class="carousel-caption">
+              <h2 class="fw-bold pb-3">주간 박스오피스 TOP ${rank}</h2>
+            </div>
+            <a href="./details.html?id=${id}" class="stretched-link"></a>
+          </div>`;
 }
 
 // daily
@@ -147,22 +142,20 @@ async function getKobisDailyBoxOffices() {
 }
 
 async function getKobisWeeklyBoxOffices() {
-  const url = `${KOBIS_WEEKLY_BOXOFFICE_URL}?key=${KOBIS_API_KEY}&targetDt=20231112&weekGb=0`;
+  const url = KOBIS_WEEKLY_BOXOFFICE_URL;
   const json = await getJson(url);
   return json.boxOfficeResult.weeklyBoxOfficeList;
 }
 
-async function getKobisMovieDetails(dailyBoxOffice) {
-  const movieCd = dailyBoxOffice.movieCd;
-  const url = `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`;
+async function getKobisMovieDetails(url) {
   const json = await getJson(url);
   return json.movieInfoResult.movieInfo;
 }
 
 async function getKmdbMovieDetails(kobisMovieDetails) {
   const movieName = kobisMovieDetails.movieNm;
-  let peopleName = "";
   const actors = kobisMovieDetails.actors;
+  let peopleName = "";
   if (actors.length != 0) {
     peopleName = actors[0].peopleNm;
   }
