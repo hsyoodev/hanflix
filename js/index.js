@@ -37,16 +37,16 @@ async function setNowPlaying() {
   let nowPlayingHTML = "";
   for (const kobisMovie of kobisMovies) {
     const movieCd = kobisMovie.movieCd;
-    const kobisMovieDetails = await getKobisMovieDetails(
+    const kobisMovieDetails = await fetchKobisMovieDetails(
       `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
     );
-    const kmdbMovieDetails = await getKmdbMovieDetails(kobisMovieDetails);
-    nowPlayingHTML += getnowPlayingHTML(kobisMovie, kmdbMovieDetails);
+    const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
+    nowPlayingHTML += getNowPlayingHTML(kobisMovie, kmdbMovieDetails);
   }
   nowPlaying.innerHTML = nowPlayingHTML;
 }
 
-function getnowPlayingHTML(kobisMovie, kmdbMovieDetails) {
+function getNowPlayingHTML(kobisMovie, kmdbMovieDetails) {
   const movieName = kobisMovie.movieNm;
   const posters = kmdbMovieDetails.posters.split("|");
   const poster = posters[0].replace("http", "https");
@@ -88,15 +88,15 @@ function getnowPlayingHTML(kobisMovie, kmdbMovieDetails) {
 // weekly box office
 async function setWeeklyBoxOffice() {
   const weeklyBoxOfficeBox = document.querySelector("#weekly-box-office-box");
-  const kobisWeeklyBoxOffices = await getKobisWeeklyBoxOffices();
+  const kobisWeeklyBoxOffices = await fetchKobisWeeklyBoxOffices();
 
   let weeklyBoxOfficeHTML = "";
   for (const kobisWeeklyBoxOffice of kobisWeeklyBoxOffices) {
     const movieCd = kobisWeeklyBoxOffice.movieCd;
-    const kobisMovieDetails = await getKobisMovieDetails(
+    const kobisMovieDetails = await fetchKobisMovieDetails(
       `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
     );
-    const kmdbMovieDetails = await getKmdbMovieDetails(kobisMovieDetails);
+    const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
     weeklyBoxOfficeHTML += getWeeklyBoxOfficeHTML(
       kobisWeeklyBoxOffice,
       kmdbMovieDetails
@@ -131,15 +131,15 @@ async function setDailyBoxOffice() {
   const dailyBoxOfficeTargetDate = document.querySelector(
     "#daily-box-office-target-date"
   );
-  const kobisDailyBoxOffices = await getKobisDailyBoxOffices();
+  const kobisDailyBoxOffices = await fetchKobisDailyBoxOffices();
 
   let dailyBoxOfficeHTML = "";
   for (const kobisDailyBoxOffice of kobisDailyBoxOffices) {
     const movieCd = kobisDailyBoxOffice.movieCd;
-    const kobisMovieDetails = await getKobisMovieDetails(
+    const kobisMovieDetails = await fetchKobisMovieDetails(
       `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
     );
-    const kmdbMovieDetails = await getKmdbMovieDetails(kobisMovieDetails);
+    const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
     dailyBoxOfficeHTML += getDailyBoxOfficeHTML(
       kobisDailyBoxOffice,
       kmdbMovieDetails
@@ -197,24 +197,24 @@ async function getJson(url) {
   return json;
 }
 
-async function getKobisDailyBoxOffices() {
+async function fetchKobisDailyBoxOffices() {
   const url = KOBIS_DAILY_BOXOFFICE_URL;
   const json = await getJson(url);
   return json.boxOfficeResult.dailyBoxOfficeList;
 }
 
-async function getKobisWeeklyBoxOffices() {
+async function fetchKobisWeeklyBoxOffices() {
   const url = KOBIS_WEEKLY_BOXOFFICE_URL;
   const json = await getJson(url);
   return json.boxOfficeResult.weeklyBoxOfficeList;
 }
 
-async function getKobisMovieDetails(url) {
+async function fetchKobisMovieDetails(url) {
   const json = await getJson(url);
   return json.movieInfoResult.movieInfo;
 }
 
-async function getKmdbMovieDetails(kobisMovieDetails) {
+async function fetchKmdbMovieDetails(kobisMovieDetails) {
   const movieName = kobisMovieDetails.movieNm;
   const actors = kobisMovieDetails.actors;
   let peopleName = "";
@@ -229,6 +229,7 @@ async function getKmdbMovieDetails(kobisMovieDetails) {
 async function fetchKobisMovies() {
   const url = KOBIS_MOVIE_LIST_URL;
   const json = await getJson(url);
+
   return json.movieListResult.movieList
     .filter(
       (movie) =>
@@ -245,6 +246,7 @@ function getYearMonthDay(date) {
   const day = date.getDate();
   return [year, month, day];
 }
+
 function getDayOfWeek(day) {
   return dayOfWeeks[day];
 }
