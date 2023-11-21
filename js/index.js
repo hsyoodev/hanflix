@@ -4,8 +4,9 @@ const yesterday = new Date();
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(today.getDate() - 7);
 yesterday.setDate(today.getDate() - 1);
-const formatYesterDay = formatDate(yesterday).join("");
-const formatOneWeekAgo = formatDate(oneWeekAgo).join("");
+const formatYesterDay = getYearMonthDay(yesterday).join("");
+const formatOneWeekAgo = getYearMonthDay(oneWeekAgo).join("");
+const [year, month, day] = getYearMonthDay(today);
 const dayOfWeeks = ["일", "월", "화", "수", "목", "금"];
 
 // kobis api
@@ -14,6 +15,9 @@ const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
 const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${formatOneWeekAgo}&weekGb=0&itemPerPage=3`;
 const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${formatYesterDay}&itemPerPage=5`;
 const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
+const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=${KOBIS_API_KEY}&itemPerPage=100&openStartDt=${year}&openEndDt=${
+  year + 1
+}&repNationCd=${22041011}`;
 
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
@@ -24,6 +28,62 @@ const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey
 // main logic
 setWeeklyBoxOffice();
 setDailyBoxOffice();
+setNowPlaying();
+
+// now playing
+async function setNowPlaying() {
+  const nowPlaying = document.querySelector("#now-playing-box");
+  const kobisMovies = await fetchKobisMovies();
+  let nowPlayingHTML = "";
+  for (const kobisMovie of kobisMovies) {
+    const movieCd = kobisMovie.movieCd;
+    const kobisMovieDetails = await getKobisMovieDetails(
+      `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
+    );
+    const kmdbMovieDetails = await getKmdbMovieDetails(kobisMovieDetails);
+    nowPlayingHTML += getnowPlayingHTML(kobisMovie, kmdbMovieDetails);
+  }
+  nowPlaying.innerHTML = nowPlayingHTML;
+}
+
+function getnowPlayingHTML(kobisMovie, kmdbMovieDetails) {
+  const movieName = kobisMovie.movieNm;
+  const posters = kmdbMovieDetails.posters.split("|");
+  const poster = posters[0].replace("http", "https");
+  const openDt = kobisMovie.openDt;
+  const year = openDt.slice(0, 4);
+  const month = openDt.slice(4, 6);
+  const day = openDt.slice(6, 8);
+  const releaseDate = `${year}-${month}-${day}`;
+  const id = kmdbMovieDetails.DOCID;
+  return `<div class="col pt-3">
+            <div class="card border-0">
+              <img
+                src="${poster}"
+                class="card-img-top rounded bg-secondary card-poster"
+                alt="Movie Poster"
+              />
+              <div class="card-body">
+                <dl>
+                  <dt
+                    class="card-title overflow-hidden text-nowrap text-truncate"
+                  >
+                    ${movieName}
+                  </dt>
+                  <dd>
+                    <dl class="row row-cols-auto small">
+                      <dt class="col">
+                        개봉일
+                      </dt>
+                      <dd class="col">${releaseDate}</dd>
+                    </dl>
+                  </dd>
+                </dl>
+              </div>                      
+              <a href="./details.html?id=${id}" class="stretched-link"></a>
+            </div>
+          </div>`;
+}
 
 // weekly box office
 async function setWeeklyBoxOffice() {
@@ -87,7 +147,7 @@ async function setDailyBoxOffice() {
   }
 
   dailyBoxOfficeBox.innerHTML = dailyBoxOfficeHTML;
-  const [year, month, date] = formatDate(yesterday);
+  const [year, month, date] = getYearMonthDay(yesterday);
   const day = yesterday.getDay();
   const dayOfWeek = getDayOfWeek(day);
   dailyBoxOfficeTargetDate.innerText = `${year}년 ${month}월 ${date}일 (${dayOfWeek}) 기준`;
@@ -166,8 +226,20 @@ async function getKmdbMovieDetails(kobisMovieDetails) {
   return json.Data[0].Result[0];
 }
 
+async function fetchKobisMovies() {
+  const url = KOBIS_MOVIE_LIST_URL;
+  const json = await getJson(url);
+  return json.movieListResult.movieList
+    .filter(
+      (movie) =>
+        movie.prdtStatNm === "개봉" && movie.genreAlt !== "성인물(에로)"
+    )
+    .sort((m1, m2) => m2.openDt - m1.openDt)
+    .slice(0, 5);
+}
+
 // date
-function formatDate(date) {
+function getYearMonthDay(date) {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
