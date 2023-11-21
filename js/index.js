@@ -1,3 +1,4 @@
+// date
 const today = new Date();
 const yesterday = new Date();
 yesterday.setDate(today.getDate() - 1);
@@ -22,7 +23,7 @@ const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey
 
 // main logic
 setWeeklyBoxOffice();
-// setDailyBoxOffice();
+setDailyBoxOffice();
 
 // weekly box office
 async function setWeeklyBoxOffice() {
@@ -70,15 +71,17 @@ async function setDailyBoxOffice() {
   const dailyBoxOfficeTargetDate = document.querySelector(
     "#daily-box-office-target-date"
   );
-
   const kobisDailyBoxOffices = await getKobisDailyBoxOffices();
+
   let dailyBoxOfficeHTML = "";
-  for (const dailyBoxOffice of kobisDailyBoxOffices) {
-    const kobisMovieDetails = await getKobisMovieDetails(dailyBoxOffice);
+  for (const kobisDailyBoxOffice of kobisDailyBoxOffices) {
+    const movieCd = kobisDailyBoxOffice.movieCd;
+    const kobisMovieDetails = await getKobisMovieDetails(
+      `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
+    );
     const kmdbMovieDetails = await getKmdbMovieDetails(kobisMovieDetails);
     dailyBoxOfficeHTML += getDailyBoxOfficeHTML(
-      dailyBoxOffice,
-      kobisMovieDetails,
+      kobisDailyBoxOffice,
       kmdbMovieDetails
     );
   }
@@ -88,17 +91,13 @@ async function setDailyBoxOffice() {
   dailyBoxOfficeTargetDate.classList.remove("placeholder");
 }
 
-function getDailyBoxOfficeHTML(
-  dailyBoxOffice,
-  kobisMovieDetails,
-  kmdbMovieDetails
-) {
-  const movieName = kobisMovieDetails.movieNm;
+function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails) {
+  const movieName = kobisDailyBoxOffice.movieNm;
   const posters = kmdbMovieDetails.posters.split("|");
   const poster = posters[0].replace("http", "https");
-  const releaseDate = dailyBoxOffice.openDt;
+  const releaseDate = kobisDailyBoxOffice.openDt;
   const id = kmdbMovieDetails.DOCID;
-  const rank = dailyBoxOffice.rank;
+  const rank = kobisDailyBoxOffice.rank;
   return `<div class="col pt-3">
             <div class="card border-0">
               <img
