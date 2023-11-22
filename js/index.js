@@ -57,7 +57,7 @@ function getNowPlayingHTML(kobisMovie, kmdbMovieDetails) {
   const releaseDate = `${year}-${month}-${day}`;
   const id = kmdbMovieDetails.DOCID;
   return `<div class="col pt-3">
-            <div class="card border-0">
+            <div class="card border-0 mx-auto">
               <img
                 src="${poster}"
                 class="card-img-top rounded bg-secondary card-poster"
@@ -162,7 +162,7 @@ function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails) {
   const id = kmdbMovieDetails.DOCID;
   const rank = kobisDailyBoxOffice.rank;
   return `<div class="col pt-3">
-            <div class="card border-0">
+            <div class="card border-0 mx-auto">
               <img
                 src="${poster}"
                 class="card-img-top rounded bg-secondary card-poster"
