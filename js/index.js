@@ -4,16 +4,16 @@ const yesterday = new Date();
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(today.getDate() - 7);
 yesterday.setDate(today.getDate() - 1);
-const formatYesterDay = getYearMonthDay(yesterday).join("");
-const formatOneWeekAgo = getYearMonthDay(oneWeekAgo).join("");
-const [year, month, day] = getYearMonthDay(today);
-const dayOfWeeks = ["일", "월", "화", "수", "목", "금"];
+const joinYesterDay = getYearMonthDay(yesterday).join("");
+const joinOneWeekAgo = getYearMonthDay(oneWeekAgo).join("");
+const [year, ,] = getYearMonthDay(today);
+const dayOfWeeks = ["일", "월", "화", "수", "목", "금", "토"];
 
 // kobis api
 const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
-const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${formatOneWeekAgo}&weekGb=0&itemPerPage=3`;
-const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${formatYesterDay}&itemPerPage=5`;
+const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${joinOneWeekAgo}&weekGb=0&itemPerPage=3`;
+const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${joinYesterDay}&itemPerPage=5`;
 const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
 const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=${KOBIS_API_KEY}&itemPerPage=100&openStartDt=${year}&openEndDt=${
   year + 1
@@ -58,14 +58,26 @@ function getWeeklyBoxOfficeHTML(kobisWeeklyBoxOffice, kmdbMovieDetails) {
   const posters = kmdbMovieDetails.posters.split("|");
   const poster = posters[0].replace("http", "https");
   const id = kmdbMovieDetails.DOCID;
+
+  const start = (oneWeekAgo.getDate() % 7) + 1;
+  const end = (7 - oneWeekAgo.getDay()) % 7;
+  const startDate = new Date();
+  const endDate = new Date();
+  startDate.setDate(oneWeekAgo.getDate() - start);
+  endDate.setDate(oneWeekAgo.getDate() + end);
+  const [startYear, startMonth, startDay] = getYearMonthDay(startDate);
+  const startDayOfWeek = getDayOfWeek(startDate.getDay());
+  const [endYear, endMonth, endDay] = getYearMonthDay(endDate);
+  const endDayOfWeek = getDayOfWeek(endDate.getDay());
   return `<div class="carousel-item h-100 my-2 ${isActive ? "active" : ""}">
-            <img
-            src="${poster}"
-            class="d-block h-75 m-auto"
-            alt="Movie Poster"
-            />
+              <img
+              src="${poster}"
+              class="d-block h-75 m-auto position-relative"
+              alt="Movie Poster"
+              />
             <div class="carousel-caption">
-              <p class="h2 fw-bold pb-3">주간 박스오피스 TOP ${rank}</p>
+              <p class="h2 fw-bold">주간 박스오피스 TOP ${rank}</p>
+              <p class="small">${startYear}년 ${startMonth}월 ${startDay}일 (${startDayOfWeek}) ~ ${endYear}년 ${endMonth}월 ${endDay}일 (${endDayOfWeek}) 기준</p>
             </div>
             <a href="./details.html?id=${id}" class="stretched-link"></a>
           </div>`;
