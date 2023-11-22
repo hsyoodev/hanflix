@@ -17,7 +17,7 @@ const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOff
 const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
 const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=${KOBIS_API_KEY}&itemPerPage=100&openStartDt=${year}&openEndDt=${
   year + 1
-}&repNationCd=${22041011}`;
+}`;
 
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
@@ -202,6 +202,7 @@ function getNowPlayingHTML(kobisMovie, kmdbMovieDetails) {
 // upcoming
 async function setUpComing() {
   const upcomingBox = document.querySelector("#upcoming-box");
+  const upcomingTargetYear = document.querySelector("#upcoming-target-year");
   const kobisMovies = await fetchKobisMovies("개봉예정");
   let upcomingHTML = "";
   for (const kobisMovie of kobisMovies) {
@@ -213,6 +214,8 @@ async function setUpComing() {
     upcomingHTML += getUpcomingHTML(kobisMovie, kmdbMovieDetails);
   }
   upcomingBox.innerHTML = upcomingHTML;
+  upcomingTargetYear.innerText = `${year}년 ~ ${year + 1}년 기준`;
+  upcomingTargetYear.classList.remove("placeholder");
 }
 
 function getUpcomingHTML(kobisMovie, kmdbMovieDetails) {
