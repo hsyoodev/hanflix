@@ -1,10 +1,17 @@
-.card-poster {
-  height: 340px;
+/* weekly box office */
+
+.section-title-before,
+.section-title-after {
+  height: 1px;
 }
 
-.card-body {
-  width: 210px;
+#weekly-box-office-box {
+  height: 70vh;
 }
+
+/* daily box office */
+/* now playing */
+/* upcoming */
 
 .card {
   width: 250px;
@@ -15,11 +22,10 @@
   scale: 1.05;
 }
 
-.section-title-before,
-.section-title-after {
-  height: 1px;
+.card-poster {
+  height: 340px;
 }
 
-#weekly-box-office-box {
-  height: 70vh;
+.card-body {
+  width: 210px;
 }
