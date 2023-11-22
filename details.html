@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HANFLIX</title>
+    <!-- bootstrap v5.3.x -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Merienda font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merienda:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- css file -->
+    <link rel="stylesheet" href="./css/common.css" />
+    <link rel="stylesheet" href="./css/details.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="d-none">HANFLIX</h1>
+      <header class="hanflix-header sticky-top">
+        <nav class="navbar navbar-expand-lg py-3 bg-white">
+          <div class="container-fluid p-0">
+            <a class="fs-5 logo" href="./index.html">HANFLIX</a>
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+              <form action="./seach.html" class="d-flex" role="search">
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  name="keyword"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button class="btn btn-outline-success" type="submit">
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <main class="hanflix-main pb-5">
+        <article>
+          <h2 class="d-none">홈 본문</h2>
+          <section>
+            <h3 class="d-none">영화 이름 상영중</h3>
+            <section>
+              <h4 class="d-none">줄거리</h4>
+            </section>
+            <section>
+              <h4 class="d-none">영상</h4>
+            </section>
+            <section>
+              <h4 class="d-none">스틸컷</h4>
+            </section>
+          </section>
+        </article>
+      </main>
+      <footer class="hanflix-footer">
+        <h2 class="d-none">저작권</h2>
+        <div class="row h-100 align-items-center text-center">
+          <div class="col">
+            <p>© <span class="logo">HANFLIX</span> All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <!-- js file -->
+    <script src="./js/details.js"></script>
+  </body>
+</html>

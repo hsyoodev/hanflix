@@ -10,7 +10,7 @@ const [year, ,] = getYearMonthDay(today);
 const dayOfWeeks = ["일", "월", "화", "수", "목", "금", "토"];
 
 // kobis api
-const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
+const KOBIS_API_KEY = "f5eef3421c602c6cb7ea224104795888";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
 const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${joinOneWeekAgo}&weekGb=0&itemPerPage=3`;
 const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${joinYesterDay}&itemPerPage=5`;
