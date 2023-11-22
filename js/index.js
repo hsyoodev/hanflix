@@ -139,6 +139,9 @@ function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails) {
 // now playing
 async function setNowPlaying() {
   const nowPlayingBox = document.querySelector("#now-playing-box");
+  const nowPlayingTargetDate = document.querySelector(
+    "#now-playing-target-date"
+  );
   const kobisMovies = await fetchKobisMovies("개봉");
   let nowPlayingHTML = "";
   for (const kobisMovie of kobisMovies) {
@@ -150,6 +153,11 @@ async function setNowPlaying() {
     nowPlayingHTML += getNowPlayingHTML(kobisMovie, kmdbMovieDetails);
   }
   nowPlayingBox.innerHTML = nowPlayingHTML;
+  const [year, month, date] = getYearMonthDay(today);
+  const day = today.getDay();
+  const dayOfWeek = getDayOfWeek(day);
+  nowPlayingTargetDate.innerText = `${year}년 ${month}월 ${date}일 (${dayOfWeek}) 기준`;
+  nowPlayingTargetDate.classList.remove("placeholder");
 }
 
 function getNowPlayingHTML(kobisMovie, kmdbMovieDetails) {
