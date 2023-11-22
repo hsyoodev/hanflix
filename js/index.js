@@ -30,61 +30,6 @@ setWeeklyBoxOffice();
 setDailyBoxOffice();
 setNowPlaying();
 
-// now playing
-async function setNowPlaying() {
-  const nowPlaying = document.querySelector("#now-playing-box");
-  const kobisMovies = await fetchKobisMovies();
-  let nowPlayingHTML = "";
-  for (const kobisMovie of kobisMovies) {
-    const movieCd = kobisMovie.movieCd;
-    const kobisMovieDetails = await fetchKobisMovieDetails(
-      `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
-    );
-    const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
-    nowPlayingHTML += getNowPlayingHTML(kobisMovie, kmdbMovieDetails);
-  }
-  nowPlaying.innerHTML = nowPlayingHTML;
-}
-
-function getNowPlayingHTML(kobisMovie, kmdbMovieDetails) {
-  const movieName = kobisMovie.movieNm;
-  const posters = kmdbMovieDetails.posters.split("|");
-  const poster = posters[0].replace("http", "https");
-  const openDt = kobisMovie.openDt;
-  const year = openDt.slice(0, 4);
-  const month = openDt.slice(4, 6);
-  const day = openDt.slice(6, 8);
-  const releaseDate = `${year}-${month}-${day}`;
-  const id = kmdbMovieDetails.DOCID;
-  return `<div class="col pt-3">
-            <div class="card border-0 mx-auto">
-              <img
-                src="${poster}"
-                class="card-img-top rounded bg-secondary card-poster"
-                alt="Movie Poster"
-              />
-              <div class="card-body">
-                <dl>
-                  <dt
-                    class="card-title overflow-hidden text-nowrap text-truncate"
-                  >
-                    ${movieName}
-                  </dt>
-                  <dd>
-                    <dl class="row row-cols-auto small">
-                      <dt class="col">
-                        개봉일
-                      </dt>
-                      <dd class="col">${releaseDate}</dd>
-                    </dl>
-                  </dd>
-                </dl>
-              </div>                      
-              <a href="./details.html?id=${id}" class="stretched-link"></a>
-            </div>
-          </div>`;
-}
-
 // weekly box office
 async function setWeeklyBoxOffice() {
   const weeklyBoxOfficeBox = document.querySelector("#weekly-box-office-box");
@@ -168,6 +113,61 @@ function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails) {
                 class="card-img-top rounded bg-secondary card-poster"
                 alt="Movie Poster"
               ><p class="h1 position-absolute top-0 end-0 fw-bold bg-dark text-white">${rank}</p></img>
+              <div class="card-body">
+                <dl>
+                  <dt
+                    class="card-title overflow-hidden text-nowrap text-truncate"
+                  >
+                    ${movieName}
+                  </dt>
+                  <dd>
+                    <dl class="row row-cols-auto small">
+                      <dt class="col">
+                        개봉일
+                      </dt>
+                      <dd class="col">${releaseDate}</dd>
+                    </dl>
+                  </dd>
+                </dl>
+              </div>                      
+              <a href="./details.html?id=${id}" class="stretched-link"></a>
+            </div>
+          </div>`;
+}
+
+// now playing
+async function setNowPlaying() {
+  const nowPlaying = document.querySelector("#now-playing-box");
+  const kobisMovies = await fetchKobisMovies();
+  let nowPlayingHTML = "";
+  for (const kobisMovie of kobisMovies) {
+    const movieCd = kobisMovie.movieCd;
+    const kobisMovieDetails = await fetchKobisMovieDetails(
+      `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
+    );
+    const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
+    nowPlayingHTML += getNowPlayingHTML(kobisMovie, kmdbMovieDetails);
+  }
+  nowPlaying.innerHTML = nowPlayingHTML;
+}
+
+function getNowPlayingHTML(kobisMovie, kmdbMovieDetails) {
+  const movieName = kobisMovie.movieNm;
+  const posters = kmdbMovieDetails.posters.split("|");
+  const poster = posters[0].replace("http", "https");
+  const openDt = kobisMovie.openDt;
+  const year = openDt.slice(0, 4);
+  const month = openDt.slice(4, 6);
+  const day = openDt.slice(6, 8);
+  const releaseDate = `${year}-${month}-${day}`;
+  const id = kmdbMovieDetails.DOCID;
+  return `<div class="col pt-3">
+            <div class="card border-0 mx-auto">
+              <img
+                src="${poster}"
+                class="card-img-top rounded bg-secondary card-poster"
+                alt="Movie Poster"
+              />
               <div class="card-body">
                 <dl>
                   <dt
