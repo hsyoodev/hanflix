@@ -138,7 +138,7 @@ function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails) {
 
 // now playing
 async function setNowPlaying() {
-  const nowPlaying = document.querySelector("#now-playing-box");
+  const nowPlayingBox = document.querySelector("#now-playing-box");
   const kobisMovies = await fetchKobisMovies("개봉");
   let nowPlayingHTML = "";
   for (const kobisMovie of kobisMovies) {
@@ -149,7 +149,7 @@ async function setNowPlaying() {
     const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
     nowPlayingHTML += getNowPlayingHTML(kobisMovie, kmdbMovieDetails);
   }
-  nowPlaying.innerHTML = nowPlayingHTML;
+  nowPlayingBox.innerHTML = nowPlayingHTML;
 }
 
 function getNowPlayingHTML(kobisMovie, kmdbMovieDetails) {
