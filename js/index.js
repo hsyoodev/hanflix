@@ -161,6 +161,7 @@ async function setNowPlaying() {
     "#now-playing-target-date"
   );
   const kobisMovies = await fetchKobisMovies("개봉");
+
   let nowPlayingHTML = "";
   for (const kobisMovie of kobisMovies) {
     const movieCd = kobisMovie.movieCd;
@@ -170,6 +171,7 @@ async function setNowPlaying() {
     const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
     nowPlayingHTML += getNowPlayingHTML(kobisMovie, kmdbMovieDetails, movieCd);
   }
+
   nowPlayingBox.innerHTML = nowPlayingHTML;
   const [year, month, date] = getYearMonthDay(today);
   const day = today.getDay();
@@ -211,7 +213,7 @@ function getNowPlayingHTML(kobisMovie, kmdbMovieDetails, movieCd) {
                     </dl>
                   </dd>
                 </dl>
-              </div>                      
+              </div>
               <a href="./details.html?movieCd=${movieCd}&movieSeq=${movieSeq}" class="stretched-link"></a>
             </div>
           </div>`;
@@ -301,12 +303,8 @@ async function fetchKobisMovieDetails(url) {
 
 async function fetchKmdbMovieDetails(kobisMovieDetails) {
   const movieName = kobisMovieDetails.movieNm;
-  const actors = kobisMovieDetails.actors;
-  let peopleName = "";
-  if (actors.length != 0) {
-    peopleName = actors[0].peopleNm;
-  }
-  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&actor=${peopleName}`;
+  const releaseDate = kobisMovieDetails.openDt;
+  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&releaseDts=${releaseDate}&releaseDte=${releaseDate}`;
   const json = await getJson(url);
   return json.Data[0].Result[0];
 }
