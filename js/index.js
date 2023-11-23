@@ -61,7 +61,10 @@ function getWeeklyBoxOfficeHTML(
   const rank = kobisWeeklyBoxOffice.rank;
   const isActive = rank == 1;
   const posters = kmdbMovieDetails.posters.split("|");
-  const poster = posters[0].replace("http", "https");
+  let poster = "images/xbox.png";
+  if (posters !== "") {
+    poster = posters[0].replace("http", "https");
+  }
   const movieSeq = kmdbMovieDetails.movieSeq;
 
   const start = (oneWeekAgo.getDate() % 7) + 1;
@@ -121,7 +124,10 @@ async function setDailyBoxOffice() {
 function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails, movieCd) {
   const movieName = kobisDailyBoxOffice.movieNm;
   const posters = kmdbMovieDetails.posters.split("|");
-  const poster = posters[0].replace("http", "https");
+  let poster = "images/xbox.png";
+  if (posters !== "") {
+    poster = posters[0].replace("http", "https");
+  }
   const releaseDate = kobisDailyBoxOffice.openDt;
   const movieSeq = kmdbMovieDetails.movieSeq;
   const rank = kobisDailyBoxOffice.rank;
@@ -183,7 +189,10 @@ async function setNowPlaying() {
 function getNowPlayingHTML(kobisMovie, kmdbMovieDetails, movieCd) {
   const movieName = kobisMovie.movieNm;
   const posters = kmdbMovieDetails.posters.split("|");
-  const poster = posters[0].replace("http", "https");
+  let poster = "images/xbox.png";
+  if (posters !== "") {
+    poster = posters[0].replace("http", "https");
+  }
   const openDt = kobisMovie.openDt;
   const year = openDt.slice(0, 4);
   const month = openDt.slice(4, 6);
@@ -241,7 +250,10 @@ async function setUpComing() {
 function getUpcomingHTML(kobisMovie, kmdbMovieDetails, movieCd) {
   const movieName = kobisMovie.movieNm;
   const posters = kmdbMovieDetails.posters.split("|");
-  const poster = posters[0].replace("http", "https");
+  let poster = "images/xbox.png";
+  if (posters !== "") {
+    poster = posters[0].replace("http", "https");
+  }
   const openDt = kobisMovie.openDt;
   const year = openDt.slice(0, 4);
   const month = openDt.slice(4, 6);
