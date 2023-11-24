@@ -91,7 +91,7 @@ async function setMovieDetails() {
     stillCutHTML += `<div class="col pt-3">
                         <div class="card border-0 mx-auto">
                         <img
-                            src=${stillCut}
+                            src=${stillCut.replace("http", "https")}
                             class="card-img-top rounded bg-secondary still-cut"
                             alt="Movie Still Cut"
                         />
