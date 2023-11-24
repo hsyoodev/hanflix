@@ -67,63 +67,73 @@
           <section>
             <div class="container pt-5">
               <div class="card border-0">
-                <div class="row placeholder-glow">
-                  <div class="col-sm-auto col-12">
+                <div class="row">
+                  <div class="col-sm-auto col-12 placeholder-glow">
                     <img id="poster" class="img-fluid rounded placeholder" />
                   </div>
-                  <div class="col-md-6 col-lg-5 col-xl-4 col-12">
-                    <div class="card-body">
+                  <div class="col-md-6 col-lg-5 col-xl-9 col-12">
+                    <div class="card-body placeholder-glow">
                       <h3
                         id="title-kor"
-                        class="h2 card-title fw-bold overflow-hidden text-nowrap text-truncate placeholder w-100"
+                        class="h2 card-title fw-bold overflow-hidden text-nowrap text-truncate placeholder w-100 text-sm-start"
                       >
                         한글 영화 제목
                       </h3>
                       <p
                         id="title-en"
-                        class="card-text overflow-hidden text-nowrap text-truncate placeholder w-100"
+                        class="card-text overflow-hidden text-nowrap text-truncate placeholder w-100 text-sm-start"
                       >
                         영어 영화 제목
                       </p>
-                      <dl class="row row-cols-2 pt-3">
-                        <dt>개봉일</dt>
-                        <dd id="release-date" class="placeholder">
-                          2023-11-22
-                        </dd>
-                        <dt>제작상태</dt>
-                        <dd id="production-state" class="placeholder">개봉</dd>
-                        <dt>영화구분</dt>
-                        <dd id="type" class="placeholder">일반영화</dd>
-                        <dt>관람등급</dt>
-                        <dd
-                          id="watch-grade"
-                          class="placeholder overflow-hidden text-nowrap text-truncate"
-                        >
-                          12세이상관람가
-                        </dd>
-                        <dt>상영시간</dt>
-                        <dd id="show-time" class="placeholder">109분 14초</dd>
-                        <dt>제작국가</dt>
-                        <dd
-                          id="nation"
-                          class="placeholder overflow-hidden text-nowrap text-truncate"
-                        >
-                          미국
-                        </dd>
-                        <dt>감독</dt>
-                        <dd
-                          id="director"
-                          class="placeholder overflow-hidden text-nowrap text-truncate"
-                        >
-                          엠마 타미
-                        </dd>
-                        <dt>장르</dt>
-                        <dd
-                          id="genre"
-                          class="placeholder overflow-hidden text-nowrap text-truncate"
-                        >
-                          공포(호러),스릴러
-                        </dd>
+                      <dl class="row row-cols-auto pt-3 grid gap-3">
+                        <dl class="col">
+                          <dd class="fw-semibold">개봉일</dd>
+                          <dd class="fw-semibold">제작상태</dd>
+                          <dd class="fw-semibold">영화구분</dd>
+                          <dd class="fw-semibold">관람등급</dd>
+                          <dd class="fw-semibold">상영시간</dd>
+                          <dd class="fw-semibold">제작국가</dd>
+                          <dd class="fw-semibold">감독</dd>
+                          <dd class="fw-semibold">장르</dd>
+                        </dl>
+                        <dl class="col">
+                          <dd id="release-date" class="placeholder d-block">
+                            2023-11-22
+                          </dd>
+                          <dd id="production-state" class="placeholder d-block">
+                            개봉
+                          </dd>
+                          <dd id="type" class="placeholder d-block">
+                            일반영화
+                          </dd>
+                          <dd
+                            id="watch-grade"
+                            class="placeholder overflow-hidden text-nowrap text-truncate d-block"
+                          >
+                            12세이상관람가
+                          </dd>
+                          <dd id="show-time" class="placeholder d-block">
+                            109분 14초
+                          </dd>
+                          <dd
+                            id="nation"
+                            class="placeholder overflow-hidden text-nowrap text-truncate d-block"
+                          >
+                            미국
+                          </dd>
+                          <dd
+                            id="director"
+                            class="placeholder overflow-hidden text-nowrap text-truncate d-block"
+                          >
+                            엠마 타미
+                          </dd>
+                          <dd
+                            id="genre"
+                            class="placeholder overflow-hidden text-nowrap text-truncate d-block"
+                          >
+                            공포(호러),스릴러
+                          </dd>
+                        </dl>
                       </dl>
                     </div>
                   </div>
@@ -139,9 +149,9 @@
               </div>
             </section>
             <section>
-              <div class="container pt-5 placeholder-glow">
+              <div class="container pt-4 placeholder-glow">
                 <h4 class="fw-bold pb-3 border-bottom">스틸컷</h4>
-                <div class="container pt-3">
+                <div class="container">
                   <div
                     id="still-cut-box"
                     class="row row-cols-xxl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1"
@@ -186,10 +196,17 @@
               </div>
             </section>
             <section>
-              <div class="container pt-5 placeholder-glow">
+              <div class="container py-5 placeholder-glow">
                 <h4 class="fw-bold pb-3 border-bottom">영상</h4>
-                <div class="pt-3">
-                  <video id="video" controls class="w-100 placeholder"></video>
+                <div id="video-box" class="row row-cols-sm-2 row-cols-1 pt-3">
+                  <div class="col pt-3">
+                    <p class="placeholder">메인 영상</p>
+                    <video controls class="w-100 placeholder rounded"></video>
+                  </div>
+                  <div class="col pt-3">
+                    <p class="placeholder">티저 영상</p>
+                    <video controls class="w-100 placeholder rounded"></video>
+                  </div>
                 </div>
               </div>
             </section>
@@ -200,7 +217,9 @@
         <h2 class="d-none">저작권</h2>
         <div class="row h-100 align-items-center text-center">
           <div class="col">
-            <p>© <span class="logo">HANFLIX</span> All rights reserved.</p>
+            <p class="m-0">
+              © <span class="logo">HANFLIX</span> All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
