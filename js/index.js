@@ -114,6 +114,7 @@ async function setDailyBoxOffice() {
   }
 
   dailyBoxOfficeBox.innerHTML = dailyBoxOfficeHTML;
+  dailyBoxOfficeBox.classList.remove("placeholder-glow");
   const [year, month, date] = getYearMonthDay(yesterday);
   const day = yesterday.getDay();
   const dayOfWeek = getDayOfWeek(day);
