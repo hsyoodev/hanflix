@@ -1,12 +1,12 @@
-.hanflix-header {
+header {
   height: 56px;
 }
 
-.hanflix-main {
+main {
   min-height: calc(100vh - 176px);
 }
 
-.hanflix-footer {
+footer {
   height: 120px;
 }
 

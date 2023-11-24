@@ -1,4 +1,12 @@
-.poster {
+#poster {
   width: 250px;
   height: 403px;
+}
+
+#plot-text {
+  height: 100px;
+}
+
+.still-cut {
+  height: 240px;
 }
