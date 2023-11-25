@@ -1,3 +1,4 @@
+// url parameter
 const params = new URL(location).searchParams;
 const query = params.get("query");
 
