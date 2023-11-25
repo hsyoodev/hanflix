@@ -2,16 +2,11 @@
 const params = new URL(location).searchParams;
 const query = params.get("query");
 
-// kobis api
-const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
-const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
-
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
 const KMDB_BASE_UTL =
   "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
-const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=${KOBIS_API_KEY}&itemPerPage=100&movieNm=${query}`;
-const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
+const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&title=${query}&listCount=500`;
 
 // main logic
 setSearchResultBox();
@@ -20,20 +15,16 @@ setSearchResultBox();
 async function setSearchResultBox() {
   const searchWord = document.querySelector("#search-word");
   const searchResultBox = document.querySelector("#search-result-box");
-  const kobisMovies = await fetchKobisMovies();
+  const kmdbMovieDetails = await fetchKmdbMovieDetails(KMDB_MOVIE_DETAILS_URL);
 
-  let searchResultHTML = "";
-  if (query !== "") {
-    for (const kobisMovie of kobisMovies) {
-      const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovie);
-
-      if (kmdbMovieDetails !== null) {
-        searchResultHTML += getSearchResultHTML(kobisMovie, kmdbMovieDetails);
+  let searchResultHTML = "<p>검색결과가 없습니다.</p>";
+  if (kmdbMovieDetails !== undefined) {
+    searchResultHTML = "";
+    for (const kmdbMovieDetail of kmdbMovieDetails) {
+      if (kmdbMovieDetail !== null) {
+        searchResultHTML += getSearchResultHTML(kmdbMovieDetail);
       }
     }
-  }
-  if (searchResultHTML === "") {
-    searchResultHTML = "<p>검색결과가 없습니다.</p>";
   }
 
   searchResultBox.innerHTML = searchResultHTML;
@@ -41,26 +32,12 @@ async function setSearchResultBox() {
   searchWord.classList.remove("placeholder");
 }
 
-function getSearchResultHTML(kobisMovie, kmdbMovieDetails) {
-  const movieCd = kobisMovie.movieCd;
-  const movieName = kobisMovie.movieNm;
-  const movieId = kmdbMovieDetails.movieId;
-  const movieSeq = kmdbMovieDetails.movieSeq;
-
-  let releaseDate = "-";
-  const openDt = kobisMovie.openDt;
-  if (openDt !== "") {
-    const year = openDt.substring(0, 4);
-    const month = openDt.substring(4, 6);
-    const day = openDt.substring(6, 8);
-    releaseDate = `${year}-${month}-${day}`;
-  }
-
-  const posters = kmdbMovieDetails.posters.split("|");
-  let poster = "/images/xbox.png";
-  if (posters[0] !== "") {
-    poster = posters[0].replace("http", "https");
-  }
+function getSearchResultHTML(kmdbMovieDetail) {
+  const title = kmdbMovieDetail.title;
+  const movieId = kmdbMovieDetail.movieId;
+  const movieSeq = kmdbMovieDetail.movieSeq;
+  const repRlsDate = kmdbMovieDetail.repRlsDate;
+  const poster = kmdbMovieDetail.posters;
 
   return `<div class="col pt-3">
             <div class="card border-0 mx-auto">
@@ -74,19 +51,19 @@ function getSearchResultHTML(kobisMovie, kmdbMovieDetails) {
                     <dt
                     class="card-title overflow-hidden text-nowrap text-truncate"
                     >
-                    ${movieName}
+                    ${title}
                     </dt>
                     <dd>
                     <dl class="row row-cols-auto small">
                         <dt class="col">
                         개봉일
                         </dt>
-                        <dd class="col">${releaseDate}</dd>
+                        <dd class="col">${repRlsDate}</dd>
                     </dl>
                     </dd>
                 </dl>
                 </div>                      
-                <a href="./details.html?movieCd=${movieCd}&movieId=${movieId}&movieSeq=${movieSeq}" class="stretched-link"></a>
+                <a href="./details.html?movieId=${movieId}&movieSeq=${movieSeq}" class="stretched-link"></a>
             </div>
             </div>`;
 }
@@ -99,43 +76,38 @@ async function getJson(url) {
   return json;
 }
 
-async function fetchKmdbMovieDetails(kobisMovie) {
-  const movieName = kobisMovie.movieNm;
-  const directors = kobisMovie.directors;
-  const openDt = kobisMovie.openDt;
-
-  let peopleName = "";
-  if (directors.length !== 0) {
-    peopleName = directors[0].peopleNm;
-  }
-  if (peopleName === "") {
-    return null;
-  }
-
-  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&director=${peopleName}&releaseDts=${openDt}`;
+async function fetchKmdbMovieDetails(url) {
   const json = await getJson(url);
+  const processData = getProcessData(json);
 
-  const result = json.Data[0].Result;
-  if (result === undefined) {
-    return null;
-  }
-  return result[0];
+  return processData;
 }
 
-async function fetchKobisMovies() {
-  const url = KOBIS_MOVIE_LIST_URL;
-  const json = await getJson(url);
+// util
+function getProcessData(json) {
+  return json.Data[0].Result?.filter((movie) => !(movie.repRlsDate === ""))
+    .sort((m1, m2) => m2.repRlsDate - m1.repRlsDate)
+    .map((movie) => {
+      const title = movie.title;
+      movie.title = title
+        .replaceAll("!HS", "")
+        .replaceAll("!HE", "")
+        .replace(":", " : ")
+        .trim();
 
-  return json.movieListResult.movieList
-    .filter(
-      (movie) =>
-        !(
-          movie.movieNm.includes("[") && movie.genreAlt.includes("성인물(에로)")
-        ) &&
-        !(
-          movie.genreAlt.includes("멜로/로맨스") && movie.repNationNm === "일본"
-        ) &&
-        movie.openDt !== ""
-    )
-    .sort((m1, m2) => m2.openDt - m1.openDt);
+      const repRlsDate = movie.repRlsDate;
+      const year = repRlsDate.substring(0, 4);
+      const month = repRlsDate.substring(4, 6);
+      const day = repRlsDate.substring(6, 8);
+      movie.repRlsDate = `${year}-${month}-${day}`;
+
+      const posters = movie.posters;
+      let firstPoster = posters.split("|")[0];
+      if (firstPoster === "") {
+        firstPoster = "images/xbox.png";
+      }
+      movie.posters = firstPoster;
+
+      return movie;
+    });
 }
