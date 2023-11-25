@@ -3,7 +3,7 @@ const params = new URL(location).searchParams;
 const query = params.get("query");
 
 // kobis api
-const KOBIS_API_KEY = "f5eef3421c602c6cb7ea224104795888";
+const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
 const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
 
@@ -44,6 +44,7 @@ async function setSearchResultBox() {
 function getSearchResultHTML(kobisMovie, kmdbMovieDetails) {
   const movieCd = kobisMovie.movieCd;
   const movieName = kobisMovie.movieNm;
+  const movieId = kmdbMovieDetails.movieId;
   const movieSeq = kmdbMovieDetails.movieSeq;
 
   let releaseDate = "-";
@@ -85,7 +86,7 @@ function getSearchResultHTML(kobisMovie, kmdbMovieDetails) {
                     </dd>
                 </dl>
                 </div>                      
-                <a href="./details.html?movieCd=${movieCd}&movieSeq=${movieSeq}" class="stretched-link"></a>
+                <a href="./details.html?movieCd=${movieCd}&movieId=${movieId}&movieSeq=${movieSeq}" class="stretched-link"></a>
             </div>
             </div>`;
 }

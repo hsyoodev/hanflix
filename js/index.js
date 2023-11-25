@@ -65,6 +65,7 @@ function getWeeklyBoxOfficeHTML(
   if (posters !== "") {
     poster = posters[0].replace("http", "https");
   }
+  const movieId = kmdbMovieDetails.movieId;
   const movieSeq = kmdbMovieDetails.movieSeq;
 
   const start = (oneWeekAgo.getDate() % 7) + 1;
@@ -87,7 +88,7 @@ function getWeeklyBoxOfficeHTML(
               <p class="h2 fw-bold">주간 박스오피스 TOP ${rank}</p>
               <p class="small">${startYear}년 ${startMonth}월 ${startDay}일 (${startDayOfWeek}) ~ ${endYear}년 ${endMonth}월 ${endDay}일 (${endDayOfWeek}) 기준</p>
             </div>
-            <a href="./details.html?movieCd=${movieCd}&movieSeq=${movieSeq}" class="stretched-link"></a>
+            <a href="./details.html?movieCd=${movieCd}&movieId=${movieId}&movieSeq=${movieSeq}" class="stretched-link"></a>
           </div>`;
 }
 
@@ -130,6 +131,7 @@ function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails, movieCd) {
     poster = posters[0].replace("http", "https");
   }
   const releaseDate = kobisDailyBoxOffice.openDt;
+  const movieId = kmdbMovieDetails.movieId;
   const movieSeq = kmdbMovieDetails.movieSeq;
   const rank = kobisDailyBoxOffice.rank;
   return `<div class="col pt-3">
@@ -156,7 +158,7 @@ function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails, movieCd) {
                   </dd>
                 </dl>
               </div>                      
-              <a href="./details.html?movieCd=${movieCd}&movieSeq=${movieSeq}" class="stretched-link"></a>
+              <a href="./details.html?movieCd=${movieCd}&movieId=${movieId}&movieSeq=${movieSeq}" class="stretched-link"></a>
             </div>
           </div>`;
 }
@@ -199,6 +201,7 @@ function getNowPlayingHTML(kobisMovie, kmdbMovieDetails, movieCd) {
   const month = openDt.slice(4, 6);
   const day = openDt.slice(6, 8);
   const releaseDate = `${year}-${month}-${day}`;
+  const movieId = kmdbMovieDetails.movieId;
   const movieSeq = kmdbMovieDetails.movieSeq;
   return `<div class="col pt-3">
             <div class="card border-0 mx-auto">
@@ -224,7 +227,7 @@ function getNowPlayingHTML(kobisMovie, kmdbMovieDetails, movieCd) {
                   </dd>
                 </dl>
               </div>
-              <a href="./details.html?movieCd=${movieCd}&movieSeq=${movieSeq}" class="stretched-link"></a>
+              <a href="./details.html?movieCd=${movieCd}&movieId=${movieId}&movieSeq=${movieSeq}" class="stretched-link"></a>
             </div>
           </div>`;
 }
@@ -260,6 +263,7 @@ function getUpcomingHTML(kobisMovie, kmdbMovieDetails, movieCd) {
   const month = openDt.slice(4, 6);
   const day = openDt.slice(6, 8);
   const releaseDate = `${year}-${month}-${day}`;
+  const movieId = kmdbMovieDetails.movieId;
   const movieSeq = kmdbMovieDetails.movieSeq;
   return `<div class="col pt-3">
             <div class="card border-0 mx-auto">
@@ -285,7 +289,7 @@ function getUpcomingHTML(kobisMovie, kmdbMovieDetails, movieCd) {
                   </dd>
                 </dl>
               </div>                      
-              <a href="./details.html?movieCd=${movieCd}&movieSeq=${movieSeq}" class="stretched-link"></a>
+              <a href="./details.html?movieCd=${movieCd}&movieId=${movieId}&movieSeq=${movieSeq}" class="stretched-link"></a>
             </div>
           </div>`;
 }
