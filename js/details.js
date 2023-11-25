@@ -1,13 +1,7 @@
 // url parameter
 const params = new URL(location).searchParams;
-const movieCd = params.get("movieCd");
-const movieId = params.get("movieId");
-const movieSeq = params.get("movieSeq");
-
-// kobis api
-const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
-const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
-const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}&movieCd=${movieCd}`;
+const movieId = encodeURI(params.get("movieId"));
+const movieSeq = encodeURI(params.get("movieSeq"));
 
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
@@ -20,12 +14,13 @@ setMovieDetails();
 
 // movie details
 async function setMovieDetails() {
+  const poster = document.querySelector("#poster");
   const titlekor = document.querySelector("#title-kor");
   const titleEn = document.querySelector("#title-en");
   const releaseDate = document.querySelector("#release-date");
-  const productionState = document.querySelector("#production-state");
+  const company = document.querySelector("#company");
   const type = document.querySelector("#type");
-  const watchGrade = document.querySelector("#watch-grade");
+  const rating = document.querySelector("#rating");
   const showTime = document.querySelector("#show-time");
   const nation = document.querySelector("#nation");
   const director = document.querySelector("#director");
@@ -33,96 +28,59 @@ async function setMovieDetails() {
   const plotText = document.querySelector("#plot-text");
   const stillCutBox = document.querySelector("#still-cut-box");
   const videoBox = document.querySelector("#video-box");
-  const kobisMovieDetails = await fetchKobisMovieDetails();
-  const kmdbMovieDetails = await fetchKmdbMovieDetails();
+  const kmdbMovieDetails = await fetchKmdbMovieDetails(KMDB_MOVIE_DETAILS_URL);
 
-  const posters = kmdbMovieDetails.posters;
-  const poster = document.querySelector("#poster");
-  poster.src = "images/xbox.png";
-  if (posters !== "") {
-    poster.src = posters.split("|")[0].replace("http", "https");
+  if (kmdbMovieDetails === undefined) {
+    interceptor();
   }
+
+  const kmdbMovieDetail = kmdbMovieDetails[0];
+
+  poster.src = kmdbMovieDetail.posters[0];
   poster.classList.remove("placeholder");
 
-  titlekor.innerText = kobisMovieDetails.movieNm;
+  titlekor.innerText = kmdbMovieDetail.title;
   titlekor.classList.remove("placeholder");
 
-  titleEn.innerText = kobisMovieDetails.movieNmEn;
+  titleEn.innerText = kmdbMovieDetail.titleEng;
   titleEn.classList.remove("placeholder");
 
-  releaseDate.innerText = "-";
-  const openDt = kobisMovieDetails.openDt;
-  if (openDt !== "") {
-    const year = openDt.substring(0, 4);
-    const month = openDt.substring(4, 6);
-    const day = openDt.substring(6, 8);
-    releaseDate.innerText = `${year}-${month}-${day}`;
-  }
+  releaseDate.innerText = kmdbMovieDetail.repRlsDate;
   releaseDate.classList.remove("placeholder");
 
-  productionState.innerText = "-";
-  const prdtStatNm = kobisMovieDetails.prdtStatNm;
-  if (prdtStatNm !== "") {
-    productionState.innerText = prdtStatNm;
-  }
-  productionState.classList.remove("placeholder");
-
-  type.innerText = "-";
-  if (kmdbMovieDetails.type !== "") {
-    type.innerText = kmdbMovieDetails.type;
-  }
+  type.innerText = kmdbMovieDetail.type;
   type.classList.remove("placeholder");
 
-  watchGrade.innerText = "-";
-  const rating = kmdbMovieDetails.rating;
-  if (rating !== "") {
-    watchGrade.innerText = kmdbMovieDetails.rating;
-  }
-  watchGrade.classList.remove("placeholder");
+  rating.innerText = kmdbMovieDetail.rating;
+  rating.classList.remove("placeholder");
 
-  showTime.innerText = "-";
-  const showTm = kobisMovieDetails.showTm;
-  if (showTm !== "") {
-    showTime.innerText = `${kobisMovieDetails.showTm}분`;
-  }
+  showTime.innerText = kmdbMovieDetail.runtime;
   showTime.classList.remove("placeholder");
 
-  nation.innerText = "-";
-  if (kmdbMovieDetails.nation !== "") {
-    nation.innerText = kmdbMovieDetails.nation;
-  }
+  nation.innerText = kmdbMovieDetail.nation;
   nation.classList.remove("placeholder");
 
-  director.innerText = "";
-  const directors = kobisMovieDetails.directors;
-  if (directors !== "") {
-    director.innerText = directors[0].peopleNm;
-  }
+  director.innerText = kmdbMovieDetail.directors.director[0].directorNm;
   director.classList.remove("placeholder");
 
-  genre.innerText = "-";
-  if (kmdbMovieDetails.genre !== "") {
-    genre.innerText = kmdbMovieDetails.genre;
-  }
+  genre.innerText = kmdbMovieDetail.genre;
   genre.classList.remove("placeholder");
 
-  plotText.innerText = "-";
-  const plots = kmdbMovieDetails.plots;
-  if (plots !== "") {
-    plotText.innerText = plots.plot[0].plotText;
-  }
+  company.innerText = kmdbMovieDetail.company;
+  company.classList.remove("placeholder");
+
+  plotText.innerText = kmdbMovieDetail.plots.plot[0].plotText;
   plotText.classList.remove("placeholder");
 
-  const stlls = kmdbMovieDetails.stlls;
+  const stills = kmdbMovieDetail.stlls;
   let stillCutHTML = `<p class="pt-3">스틸컷 결과가 없습니다.</p>`;
-  if (stlls !== "") {
+  if (stills !== null) {
     stillCutHTML = "";
-    const stillCuts = stlls.split("|");
-    for (const stillCut of stillCuts) {
+    for (const still of stills) {
       stillCutHTML += `<div class="col pt-3">
                           <div class="card border-0 mx-auto">
                           <img
-                              src=${stillCut.replace("http", "https")}
+                              src=${still}
                               class="card-img-top rounded bg-secondary still-cut"
                               alt="Movie Still Cut"
                           />
@@ -132,25 +90,22 @@ async function setMovieDetails() {
   }
   stillCutBox.innerHTML = stillCutHTML;
 
-  const vods = kmdbMovieDetails.vods.vod;
-  let videoHTML = "";
-  for (const vod of vods) {
-    const vodClass = vod.vodClass;
-    const vodUrl = vod.vodUrl.replace("trailerPlayPop?pFileNm=", "play/");
-    if (vodClass === "" && vodUrl === "") {
-      break;
-    }
-    videoHTML += `<div class="col pt-3">
+  const vods = kmdbMovieDetail.vods.vod;
+  let videoHTML = `<p>영상 결과가 없습니다.</p>`;
+  if (vods !== null) {
+    videoHTML = "";
+    for (const vod of vods) {
+      const vodClass = vod.vodClass;
+      const vodUrl = vod.vodUrl;
+      videoHTML += `<div class="col pt-3">
                     <p class="overflow-hidden text-nowrap text-truncate">${vodClass}</p>
                     <video
                     src=${vodUrl}
                     controls
-                    class="w-100 rounded"
+                    class="w-100 rounded video object-fit-fill"
                     >해당 브라우저는 video 태그를 지원하지 않습니다.</video>
                 </div>`;
-  }
-  if (videoHTML === "") {
-    videoHTML = "<p>영상 결과가 없습니다.</p>";
+    }
   }
   videoBox.innerHTML = videoHTML;
   videoBox.classList.remove("placeholder-glow");
@@ -159,19 +114,79 @@ async function setMovieDetails() {
 // fetch
 async function getJson(url) {
   const response = await fetch(url);
-  const json = await response.json();
+
+  let json;
+  try {
+    json = await response.json();
+  } catch (e) {
+    console.log(e);
+    interceptor();
+  }
 
   return json;
 }
 
-async function fetchKobisMovieDetails() {
-  const json = await getJson(KOBIS_MOVIE_DETAILS_URL);
+async function fetchKmdbMovieDetails(url) {
+  const json = await getJson(url);
+  const processData = getDataProcessing(json);
 
-  return json.movieInfoResult.movieInfo;
+  return processData;
 }
 
-async function fetchKmdbMovieDetails() {
-  const json = await getJson(KMDB_MOVIE_DETAILS_URL);
+// util
+function getDataProcessing(json) {
+  return json.Data[0].Result?.filter((movie) => !(movie.repRlsDate === ""))
+    .sort((m1, m2) => m2.repRlsDate - m1.repRlsDate)
+    .map((movie) => {
+      const title = movie.title;
+      movie.title = title
+        .replaceAll("!HS", "")
+        .replaceAll("!HE", "")
+        .replace(":", " : ")
+        .trim();
 
-  return json.Data[0].Result[0];
+      const repRlsDate = movie.repRlsDate;
+      const year = repRlsDate.substring(0, 4);
+      const month = repRlsDate.substring(4, 6);
+      const day = repRlsDate.substring(6, 8);
+      movie.repRlsDate = `${year}-${month}-${day}`;
+
+      const posters = movie.posters.split("|");
+      let firstPoster = posters[0];
+      if (firstPoster === "") {
+        firstPoster = "images/xbox.png";
+      }
+      posters[0] = firstPoster;
+      movie.posters = posters;
+
+      const runtime = movie.runtime;
+      movie.runtime = `${runtime}분`;
+
+      let stills = movie.stlls.replaceAll("http", "https").split("|");
+      const firstStill = stills[0];
+      if (firstStill === "") {
+        stills = null;
+      }
+      movie.stlls = stills;
+
+      let vods = movie.vods.vod;
+      for (const vod of vods) {
+        const vodUrl = vod.vodUrl.replace("trailerPlayPop?pFileNm=", "play/");
+        vod.vodUrl = vodUrl;
+      }
+      const firstVod = vods[0];
+      const vodClass = firstVod.vodClass;
+      const vodUrl = firstVod.vodUrl;
+      if (vodClass === "" && vodUrl === "") {
+        vods = null;
+      }
+      movie.vods.vod = vods;
+
+      return movie;
+    });
+}
+
+function interceptor() {
+  alert("잘못된 접근입니다.");
+  history.back();
 }
