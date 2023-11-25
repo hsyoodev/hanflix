@@ -20,6 +20,8 @@ setMovieDetails();
 // movie details
 async function setMovieDetails() {
   const poster = document.querySelector("#poster");
+  poster.src = "images/xbox.png";
+
   const titlekor = document.querySelector("#title-kor");
   const titleEn = document.querySelector("#title-en");
   const releaseDate = document.querySelector("#release-date");
@@ -39,12 +41,9 @@ async function setMovieDetails() {
   );
   const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
 
-  const posters = kmdbMovieDetails.posters.split("|");
-  if (posters === "") {
-    poster.src = "images/xbox.png";
-  }
+  const posters = kmdbMovieDetails.posters;
   if (posters !== "") {
-    poster.src = posters[0].replace("http", "https");
+    poster.src = posters.split("|")[0].replace("http", "https");
   }
   poster.classList.remove("placeholder");
 
@@ -54,49 +53,85 @@ async function setMovieDetails() {
   titleEn.innerText = kobisMovieDetails.movieNmEn;
   titleEn.classList.remove("placeholder");
 
+  releaseDate.innerText = "-";
   const openDt = kobisMovieDetails.openDt;
-  const year = openDt.substring(0, 4);
-  const month = openDt.substring(4, 6);
-  const day = openDt.substring(6, 8);
-  releaseDate.innerText = `${year}-${month}-${day}`;
+  if (openDt !== "") {
+    const year = openDt.substring(0, 4);
+    const month = openDt.substring(4, 6);
+    const day = openDt.substring(6, 8);
+    releaseDate.innerText = `${year}-${month}-${day}`;
+  }
   releaseDate.classList.remove("placeholder");
 
-  productionState.innerText = kobisMovieDetails.prdtStatNm;
+  productionState.innerText = "-";
+  const prdtStatNm = kobisMovieDetails.prdtStatNm;
+  if (prdtStatNm !== "") {
+    productionState.innerText = prdtStatNm;
+  }
   productionState.classList.remove("placeholder");
 
-  type.innerText = kmdbMovieDetails.type;
+  type.innerText = "-";
+  if (kmdbMovieDetails.type !== "") {
+    type.innerText = kmdbMovieDetails.type;
+  }
   type.classList.remove("placeholder");
 
-  watchGrade.innerText = kmdbMovieDetails.rating;
+  watchGrade.innerText = "-";
+  const rating = kmdbMovieDetails.rating;
+  if (rating !== "") {
+    watchGrade.innerText = kmdbMovieDetails.rating;
+  }
   watchGrade.classList.remove("placeholder");
 
-  showTime.innerText = `${kobisMovieDetails.showTm}분`;
+  showTime.innerText = "-";
+  const showTm = kobisMovieDetails.showTm;
+  if (showTm !== "") {
+    showTime.innerText = `${kobisMovieDetails.showTm}분`;
+  }
   showTime.classList.remove("placeholder");
 
-  nation.innerText = kmdbMovieDetails.nation;
+  nation.innerText = "-";
+  if (kmdbMovieDetails.nation !== "") {
+    nation.innerText = kmdbMovieDetails.nation;
+  }
   nation.classList.remove("placeholder");
 
-  director.innerText = kmdbMovieDetails.directors.director[0].directorNm;
+  director.innerText = "";
+  const directors = kmdbMovieDetails.directors;
+  if (directors !== "") {
+    director.innerText = directors.director[0].directorNm;
+  }
   director.classList.remove("placeholder");
 
-  genre.innerText = kmdbMovieDetails.genre;
+  genre.innerText = "-";
+  if (kmdbMovieDetails.genre !== "") {
+    genre.innerText = kmdbMovieDetails.genre;
+  }
   genre.classList.remove("placeholder");
 
-  plotText.innerText = kmdbMovieDetails.plots.plot[0].plotText;
+  plotText.innerText = "-";
+  const plots = kmdbMovieDetails.plots;
+  if (plots !== "") {
+    plotText.innerText = plots.plot[0].plotText;
+  }
   plotText.classList.remove("placeholder");
 
-  const stillCuts = kmdbMovieDetails.stlls.split("|");
-  let stillCutHTML = "";
-  for (const stillCut of stillCuts) {
-    stillCutHTML += `<div class="col pt-3">
-                        <div class="card border-0 mx-auto">
-                        <img
-                            src=${stillCut.replace("http", "https")}
-                            class="card-img-top rounded bg-secondary still-cut"
-                            alt="Movie Still Cut"
-                        />
-                        </div>
-                    </div>`;
+  const stlls = kmdbMovieDetails.stlls;
+  let stillCutHTML = `<p class="pt-3">스틸컷 결과가 없습니다.</p>`;
+  if (stlls !== "") {
+    stillCutHTML = "";
+    const stillCuts = stlls.split("|");
+    for (const stillCut of stillCuts) {
+      stillCutHTML += `<div class="col pt-3">
+                          <div class="card border-0 mx-auto">
+                          <img
+                              src=${stillCut.replace("http", "https")}
+                              class="card-img-top rounded bg-secondary still-cut"
+                              alt="Movie Still Cut"
+                          />
+                          </div>
+                      </div>`;
+    }
   }
   stillCutBox.innerHTML = stillCutHTML;
 
