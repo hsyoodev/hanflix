@@ -1,18 +1,19 @@
 // url parameter
 const params = new URL(location).searchParams;
 const movieCd = params.get("movieCd");
+const movieId = params.get("movieId");
 const movieSeq = params.get("movieSeq");
 
 // kobis api
 const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
-const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
+const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}&movieCd=${movieCd}`;
 
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
 const KMDB_BASE_UTL =
   "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
-const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
+const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&movieId=${movieId}&movieSeq=${movieSeq}`;
 
 // main logic
 setMovieDetails();
@@ -35,12 +36,8 @@ async function setMovieDetails() {
   const plotText = document.querySelector("#plot-text");
   const stillCutBox = document.querySelector("#still-cut-box");
   const videoBox = document.querySelector("#video-box");
-
-  const kobisMovieDetails = await fetchKobisMovieDetails(
-    `${KOBIS_MOVIE_DETAILS_URL}&movieCd=${movieCd}`
-  );
-  const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovieDetails);
-
+  const kobisMovieDetails = await fetchKobisMovieDetails();
+  const kmdbMovieDetails = await fetchKmdbMovieDetails();
   const posters = kmdbMovieDetails.posters;
   if (posters !== "") {
     poster.src = posters.split("|")[0].replace("http", "https");
@@ -97,9 +94,9 @@ async function setMovieDetails() {
   nation.classList.remove("placeholder");
 
   director.innerText = "";
-  const directors = kmdbMovieDetails.directors;
+  const directors = kobisMovieDetails.directors;
   if (directors !== "") {
-    director.innerText = directors.director[0].directorNm;
+    director.innerText = directors[0].peopleNm;
   }
   director.classList.remove("placeholder");
 
@@ -166,15 +163,12 @@ async function getJson(url) {
   return json;
 }
 
-async function fetchKobisMovieDetails(url) {
-  const json = await getJson(url);
+async function fetchKobisMovieDetails() {
+  const json = await getJson(KOBIS_MOVIE_DETAILS_URL);
   return json.movieInfoResult.movieInfo;
 }
 
-async function fetchKmdbMovieDetails(kobisMovieDetails) {
-  const movieName = kobisMovieDetails.movieNm;
-  const releaseDate = kobisMovieDetails.openDt;
-  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&releaseDts=${releaseDate}&releaseDte=${releaseDate}`;
-  const json = await getJson(url);
+async function fetchKmdbMovieDetails() {
+  const json = await getJson(KMDB_MOVIE_DETAILS_URL);
   return json.Data[0].Result[0];
 }
