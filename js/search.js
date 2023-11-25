@@ -1,6 +1,6 @@
 // url parameter
 const params = new URL(location).searchParams;
-const query = params.get("query");
+const query = encodeURI(params.get("query"));
 
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
@@ -28,7 +28,7 @@ async function setSearchResultBox() {
   }
 
   searchResultBox.innerHTML = searchResultHTML;
-  searchWord.innerText = query;
+  searchWord.innerText = decodeURI(query);
   searchWord.classList.remove("placeholder");
 }
 
@@ -37,7 +37,7 @@ function getSearchResultHTML(kmdbMovieDetail) {
   const movieId = kmdbMovieDetail.movieId;
   const movieSeq = kmdbMovieDetail.movieSeq;
   const repRlsDate = kmdbMovieDetail.repRlsDate;
-  const poster = kmdbMovieDetail.posters;
+  const poster = kmdbMovieDetail.poster;
 
   return `<div class="col pt-3">
             <div class="card border-0 mx-auto">
@@ -106,7 +106,7 @@ function getProcessData(json) {
       if (firstPoster === "") {
         firstPoster = "images/xbox.png";
       }
-      movie.posters = firstPoster;
+      movie.poster = firstPoster;
 
       return movie;
     });
