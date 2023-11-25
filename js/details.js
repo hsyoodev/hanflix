@@ -151,7 +151,7 @@ function getDataProcessing(json) {
       const day = repRlsDate.substring(6, 8);
       movie.repRlsDate = `${year}-${month}-${day}`;
 
-      const posters = movie.posters.split("|");
+      const posters = movie.posters.replaceAll("http", "https").split("|");
       let firstPoster = posters[0];
       if (firstPoster === "") {
         firstPoster = "images/xbox.png";

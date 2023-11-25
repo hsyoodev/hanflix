@@ -37,7 +37,7 @@ function getSearchResultHTML(kmdbMovieDetail) {
   const movieId = kmdbMovieDetail.movieId;
   const movieSeq = kmdbMovieDetail.movieSeq;
   const repRlsDate = kmdbMovieDetail.repRlsDate;
-  const poster = kmdbMovieDetail.poster;
+  const poster = kmdbMovieDetail.posters[0];
 
   return `<div class="col pt-3">
             <div class="card border-0 mx-auto">
@@ -85,13 +85,13 @@ async function getJson(url) {
 
 async function fetchKmdbMovieDetails(url) {
   const json = await getJson(url);
-  const processData = getProcessData(json);
+  const dataProcessing = getDataProcessing(json);
 
-  return processData;
+  return dataProcessing;
 }
 
 // util
-function getProcessData(json) {
+function getDataProcessing(json) {
   return json.Data[0].Result?.filter((movie) => !(movie.repRlsDate === ""))
     .sort((m1, m2) => m2.repRlsDate - m1.repRlsDate)
     .map((movie) => {
@@ -108,12 +108,13 @@ function getProcessData(json) {
       const day = repRlsDate.substring(6, 8);
       movie.repRlsDate = `${year}-${month}-${day}`;
 
-      const posters = movie.posters;
-      let firstPoster = posters.split("|")[0];
+      const posters = movie.posters.replaceAll("http", "https").split("|");
+      let firstPoster = posters[0];
       if (firstPoster === "") {
         firstPoster = "images/xbox.png";
       }
-      movie.poster = firstPoster;
+      posters[0] = firstPoster;
+      movie.posters = posters;
 
       return movie;
     });
