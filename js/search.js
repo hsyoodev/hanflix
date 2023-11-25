@@ -71,7 +71,14 @@ function getSearchResultHTML(kmdbMovieDetail) {
 // fetch
 async function getJson(url) {
   const response = await fetch(url);
-  const json = await response.json();
+
+  let json;
+  try {
+    json = await response.json();
+  } catch (e) {
+    console.log(e);
+    interceptor();
+  }
 
   return json;
 }
@@ -110,4 +117,9 @@ function getProcessData(json) {
 
       return movie;
     });
+}
+
+function interceptor() {
+  alert("잘못된 접근입니다.");
+  history.back();
 }
