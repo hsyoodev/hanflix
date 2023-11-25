@@ -1,0 +1,16 @@
+.card {
+  width: 250px;
+  transition: all 0.7s;
+}
+
+.card:hover {
+  scale: 1.05;
+}
+
+.card-poster {
+  height: 340px;
+}
+
+.card-body {
+  width: 210px;
+}
