@@ -12,31 +12,33 @@ const KMDB_API_KEY = "077QYNU9KT03C64KE480";
 const KMDB_BASE_UTL =
   "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
 const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=${KOBIS_API_KEY}&itemPerPage=100&movieNm=${query}`;
-const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&query=${query}`;
+const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
 
 // main logic
 setSearchResultBox();
 
 // search result
 async function setSearchResultBox() {
+  const searchWord = document.querySelector("#search-word");
   const searchResultBox = document.querySelector("#search-result-box");
   const kobisMovies = await fetchKobisMovies();
 
-  const searchWord = document.querySelector("#search-word");
-  searchWord.innerText = query;
-  searchWord.classList.remove("placeholder");
-
   let searchResultHTML = "";
-  for (const kobisMovie of kobisMovies) {
-    const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovie);
-    if (kmdbMovieDetails !== null) {
-      searchResultHTML += getSearchResultHTML(kobisMovie, kmdbMovieDetails);
+  if (query !== "") {
+    for (const kobisMovie of kobisMovies) {
+      const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovie);
+      if (kmdbMovieDetails !== null) {
+        searchResultHTML += getSearchResultHTML(kobisMovie, kmdbMovieDetails);
+      }
     }
   }
   if (searchResultHTML === "") {
     searchResultHTML = "<p>검색결과가 없습니다.</p>";
   }
+
   searchResultBox.innerHTML = searchResultHTML;
+  searchWord.innerText = query;
+  searchWord.classList.remove("placeholder");
 }
 
 function getSearchResultHTML(kobisMovie, kmdbMovieDetails) {
@@ -44,11 +46,14 @@ function getSearchResultHTML(kobisMovie, kmdbMovieDetails) {
   const movieName = kobisMovie.movieNm;
   const movieSeq = kmdbMovieDetails.movieSeq;
 
+  let releaseDate = "-";
   const openDt = kobisMovie.openDt;
-  const year = openDt.substring(0, 4);
-  const month = openDt.substring(4, 6);
-  const day = openDt.substring(6, 8);
-  const releaseDate = `${year}-${month}-${day}`;
+  if (openDt !== "") {
+    const year = openDt.substring(0, 4);
+    const month = openDt.substring(4, 6);
+    const day = openDt.substring(6, 8);
+    releaseDate = `${year}-${month}-${day}`;
+  }
 
   const posters = kmdbMovieDetails.posters.split("|");
   let poster = "/images/xbox.png";
@@ -95,11 +100,17 @@ async function getJson(url) {
 
 async function fetchKmdbMovieDetails(kobisMovie) {
   const movieName = kobisMovie.movieNm;
-  const releaseDate = kobisMovie.openDt;
-  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&releaseDts=${releaseDate}&releaseDte=${releaseDate}`;
+  const directors = kobisMovie.directors;
+  let peopleName = "";
+  if (directors.length !== 0) {
+    peopleName = directors[0].peopleNm;
+  }
+  if (peopleName === "") {
+    return null;
+  }
+  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&director=${peopleName}`;
   const json = await getJson(url);
   const result = json.Data[0].Result;
-
   if (result === undefined) {
     return null;
   }
@@ -113,7 +124,11 @@ async function fetchKobisMovies() {
   return json.movieListResult.movieList
     .filter(
       (movie) =>
-        !movie.movieNm.includes("[") && movie.genreAlt !== "성인물(에로)"
+        !movie.movieNm.includes("[") &&
+        !movie.genreAlt.includes("성인물(에로)") &&
+        !(
+          movie.genreAlt.includes("멜로/로맨스") && movie.repNationNm === "일본"
+        )
     )
     .sort((m1, m2) => m2.openDt - m1.openDt);
 }
