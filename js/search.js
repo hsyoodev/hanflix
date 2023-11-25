@@ -5,7 +5,6 @@ const query = params.get("query");
 // kobis api
 const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
 const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
-const KOBIS_MOVIE_DETAILS_URL = `${KOBIS_BASE_URL}/movie/searchMovieInfo.json?&key=${KOBIS_API_KEY}`;
 
 // kmdb api
 const KMDB_API_KEY = "077QYNU9KT03C64KE480";
@@ -27,6 +26,7 @@ async function setSearchResultBox() {
   if (query !== "") {
     for (const kobisMovie of kobisMovies) {
       const kmdbMovieDetails = await fetchKmdbMovieDetails(kobisMovie);
+
       if (kmdbMovieDetails !== null) {
         searchResultHTML += getSearchResultHTML(kobisMovie, kmdbMovieDetails);
       }
@@ -102,6 +102,8 @@ async function getJson(url) {
 async function fetchKmdbMovieDetails(kobisMovie) {
   const movieName = kobisMovie.movieNm;
   const directors = kobisMovie.directors;
+  const openDt = kobisMovie.openDt;
+
   let peopleName = "";
   if (directors.length !== 0) {
     peopleName = directors[0].peopleNm;
@@ -109,8 +111,10 @@ async function fetchKmdbMovieDetails(kobisMovie) {
   if (peopleName === "") {
     return null;
   }
-  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&director=${peopleName}`;
+
+  const url = `${KMDB_MOVIE_DETAILS_URL}&title=${movieName}&director=${peopleName}&releaseDts=${openDt}`;
   const json = await getJson(url);
+
   const result = json.Data[0].Result;
   if (result === undefined) {
     return null;
@@ -125,11 +129,13 @@ async function fetchKobisMovies() {
   return json.movieListResult.movieList
     .filter(
       (movie) =>
-        !movie.movieNm.includes("[") &&
-        !movie.genreAlt.includes("성인물(에로)") &&
+        !(
+          movie.movieNm.includes("[") && movie.genreAlt.includes("성인물(에로)")
+        ) &&
         !(
           movie.genreAlt.includes("멜로/로맨스") && movie.repNationNm === "일본"
-        )
+        ) &&
+        movie.openDt !== ""
     )
     .sort((m1, m2) => m2.openDt - m1.openDt);
 }

@@ -20,9 +20,6 @@ setMovieDetails();
 
 // movie details
 async function setMovieDetails() {
-  const poster = document.querySelector("#poster");
-  poster.src = "images/xbox.png";
-
   const titlekor = document.querySelector("#title-kor");
   const titleEn = document.querySelector("#title-en");
   const releaseDate = document.querySelector("#release-date");
@@ -38,7 +35,10 @@ async function setMovieDetails() {
   const videoBox = document.querySelector("#video-box");
   const kobisMovieDetails = await fetchKobisMovieDetails();
   const kmdbMovieDetails = await fetchKmdbMovieDetails();
+
   const posters = kmdbMovieDetails.posters;
+  const poster = document.querySelector("#poster");
+  poster.src = "images/xbox.png";
   if (posters !== "") {
     poster.src = posters.split("|")[0].replace("http", "https");
   }
@@ -160,15 +160,18 @@ async function setMovieDetails() {
 async function getJson(url) {
   const response = await fetch(url);
   const json = await response.json();
+
   return json;
 }
 
 async function fetchKobisMovieDetails() {
   const json = await getJson(KOBIS_MOVIE_DETAILS_URL);
+
   return json.movieInfoResult.movieInfo;
 }
 
 async function fetchKmdbMovieDetails() {
   const json = await getJson(KMDB_MOVIE_DETAILS_URL);
+
   return json.Data[0].Result[0];
 }
