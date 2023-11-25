@@ -88,8 +88,8 @@
                       >
                         영어 영화 제목
                       </p>
-                      <dl class="row row-cols-auto pt-3 grid gap-3">
-                        <dl class="col">
+                      <dl class="row row-cols-sm-auto pt-3 grid gap-3">
+                        <dl class="col-auto">
                           <dd class="fw-semibold">개봉일</dd>
                           <dd class="fw-semibold">영화구분</dd>
                           <dd class="fw-semibold">관람등급</dd>
@@ -99,7 +99,7 @@
                           <dd class="fw-semibold">장르</dd>
                           <dd class="fw-semibold">제작사</dd>
                         </dl>
-                        <dl class="col">
+                        <dl class="col-6">
                           <dd id="release-date" class="placeholder d-block">
                             2023-11-22
                           </dd>
@@ -133,7 +133,12 @@
                           >
                             공포(호러),스릴러
                           </dd>
-                          <dd id="company" class="placeholder d-block">개봉</dd>
+                          <dd
+                            id="company"
+                            class="placeholder overflow-hidden text-nowrap text-truncate d-block"
+                          >
+                            개봉
+                          </dd>
                         </dl>
                       </dl>
                     </div>
