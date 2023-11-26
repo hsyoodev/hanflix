@@ -1,11 +1,11 @@
 // url parameter
 const params = new URL(location).searchParams;
-const query = encodeURI(params.get("query"));
+const query = encodeURI(params.get('query'));
 
 // kmdb api
-const KMDB_API_KEY = "077QYNU9KT03C64KE480";
+const KMDB_API_KEY = '077QYNU9KT03C64KE480';
 const KMDB_BASE_UTL =
-  "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
+  'https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp';
 const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&title=${query}&listCount=500`;
 
 // main logic
@@ -13,13 +13,13 @@ setSearchResultBox();
 
 // search result
 async function setSearchResultBox() {
-  const searchWord = document.querySelector("#search-word");
-  const searchResultBox = document.querySelector("#search-result-box");
+  const searchWord = document.querySelector('#search-word');
+  const searchResultBox = document.querySelector('#search-result-box');
   const kmdbMovieDetails = await fetchKmdbMovieDetails(KMDB_MOVIE_DETAILS_URL);
 
-  let searchResultHTML = "<p>검색결과가 없습니다.</p>";
+  let searchResultHTML = '<p>검색결과가 없습니다.</p>';
   if (kmdbMovieDetails !== undefined) {
-    searchResultHTML = "";
+    searchResultHTML = '';
     for (const kmdbMovieDetail of kmdbMovieDetails) {
       if (kmdbMovieDetail !== null) {
         searchResultHTML += getSearchResultHTML(kmdbMovieDetail);
@@ -29,7 +29,7 @@ async function setSearchResultBox() {
 
   searchResultBox.innerHTML = searchResultHTML;
   searchWord.innerText = decodeURI(query);
-  searchWord.classList.remove("placeholder");
+  searchWord.classList.remove('placeholder');
 }
 
 function getSearchResultHTML(kmdbMovieDetail) {
@@ -92,14 +92,14 @@ async function fetchKmdbMovieDetails(url) {
 
 // util
 function getDataProcessing(json) {
-  return json.Data[0].Result?.filter((movie) => !(movie.repRlsDate === ""))
+  return json.Data[0].Result?.filter((movie) => !(movie.repRlsDate === ''))
     .sort((m1, m2) => m2.repRlsDate - m1.repRlsDate)
     .map((movie) => {
       const title = movie.title;
       movie.title = title
-        .replaceAll("!HS", "")
-        .replaceAll("!HE", "")
-        .replace(":", " : ")
+        .replaceAll('!HS', '')
+        .replaceAll('!HE', '')
+        .replace(':', ' : ')
         .trim();
 
       const repRlsDate = movie.repRlsDate;
@@ -108,10 +108,10 @@ function getDataProcessing(json) {
       const day = repRlsDate.substring(6, 8);
       movie.repRlsDate = `${year}-${month}-${day}`;
 
-      const posters = movie.posters.replaceAll("http", "https").split("|");
+      const posters = movie.posters.replaceAll('http', 'https').split('|');
       let firstPoster = posters[0];
-      if (firstPoster === "") {
-        firstPoster = "images/xbox.png";
+      if (firstPoster === '') {
+        firstPoster = 'images/xbox.png';
       }
       posters[0] = firstPoster;
       movie.posters = posters;
@@ -121,6 +121,6 @@ function getDataProcessing(json) {
 }
 
 function interceptor() {
-  alert("잘못된 접근입니다.");
+  alert('잘못된 접근입니다.');
   history.back();
 }

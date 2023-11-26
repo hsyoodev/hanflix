@@ -5,14 +5,14 @@ const oneWeekAgo = new Date();
 yesterday.setDate(today.getDate() - 1);
 oneWeekAgo.setDate(today.getDate() - 7);
 
-const joinYesterDay = getYearMonthDay(yesterday).join("");
-const joinOneWeekAgo = getYearMonthDay(oneWeekAgo).join("");
+const joinYesterDay = getYearMonthDay(yesterday).join('');
+const joinOneWeekAgo = getYearMonthDay(oneWeekAgo).join('');
 const [year, ,] = getYearMonthDay(today);
-const dayOfWeeks = ["일", "월", "화", "수", "목", "금", "토"];
+const dayOfWeeks = ['일', '월', '화', '수', '목', '금', '토'];
 
 // kobis api
-const KOBIS_API_KEY = "ed9a848739062a6a22fb1cdc21c0d444";
-const KOBIS_BASE_URL = "https://kobis.or.kr/kobisopenapi/webservice/rest";
+const KOBIS_API_KEY = 'ed9a848739062a6a22fb1cdc21c0d444';
+const KOBIS_BASE_URL = 'https://kobis.or.kr/kobisopenapi/webservice/rest';
 const KOBIS_WEEKLY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchWeeklyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${joinOneWeekAgo}&weekGb=0&itemPerPage=3`;
 const KOBIS_DAILY_BOXOFFICE_URL = `${KOBIS_BASE_URL}/boxoffice/searchDailyBoxOfficeList.json?key=${KOBIS_API_KEY}&targetDt=${joinYesterDay}&itemPerPage=5`;
 const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=${KOBIS_API_KEY}&itemPerPage=100&openStartDt=${year}&openEndDt=${
@@ -20,9 +20,9 @@ const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=
 }`;
 
 // kmdb api
-const KMDB_API_KEY = "077QYNU9KT03C64KE480";
+const KMDB_API_KEY = '077QYNU9KT03C64KE480';
 const KMDB_BASE_UTL =
-  "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
+  'https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp';
 const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
 
 // main logic
@@ -33,12 +33,12 @@ setUpComing();
 
 // weekly box office
 async function setWeeklyBoxOffice() {
-  const weeklyBoxOfficeBox = document.querySelector("#weekly-box-office-box");
+  const weeklyBoxOfficeBox = document.querySelector('#weekly-box-office-box');
   const kobisWeeklyBoxOffices = await fetchKobisWeeklyBoxOffices(
     KOBIS_WEEKLY_BOXOFFICE_URL
   );
 
-  let weeklyBoxOfficeHTML = "";
+  let weeklyBoxOfficeHTML = '';
   for (const kobisWeeklyBoxOffice of kobisWeeklyBoxOffices) {
     const movieNm = kobisWeeklyBoxOffice.movieNm;
     const releaseDte = kobisWeeklyBoxOffice.releaseDte;
@@ -75,7 +75,7 @@ function getWeeklyBoxOfficeHTML(kobisWeeklyBoxOffice, kmdbMovieDetails) {
   const startDayOfWeek = getDayOfWeek(startDate.getDay());
   const endDayOfWeek = getDayOfWeek(endDate.getDay());
 
-  return `<div class="carousel-item h-100 my-2 ${isActive ? "active" : ""}">
+  return `<div class="carousel-item h-100 my-2 ${isActive ? 'active' : ''}">
               <img
               src="${poster}"
               class="d-block h-75 m-auto position-relative"
@@ -91,9 +91,9 @@ function getWeeklyBoxOfficeHTML(kobisWeeklyBoxOffice, kmdbMovieDetails) {
 
 // daily
 async function setDailyBoxOffice() {
-  const dailyBoxOfficeBox = document.querySelector("#daily-box-office-box");
+  const dailyBoxOfficeBox = document.querySelector('#daily-box-office-box');
   const dailyBoxOfficeTargetDate = document.querySelector(
-    "#daily-box-office-target-date"
+    '#daily-box-office-target-date'
   );
   const kobisDailyBoxOffices = await fetchKobisDailyBoxOffices(
     KOBIS_DAILY_BOXOFFICE_URL
@@ -101,7 +101,7 @@ async function setDailyBoxOffice() {
   const [year, month, day] = getYearMonthDay(yesterday);
   const dayOfWeek = getDayOfWeek(yesterday.getDay());
 
-  let dailyBoxOfficeHTML = "";
+  let dailyBoxOfficeHTML = '';
   for (const kobisDailyBoxOffice of kobisDailyBoxOffices) {
     const movieNm = kobisDailyBoxOffice.movieNm;
     const releaseDte = kobisDailyBoxOffice.releaseDte;
@@ -116,9 +116,9 @@ async function setDailyBoxOffice() {
   }
 
   dailyBoxOfficeBox.innerHTML = dailyBoxOfficeHTML;
-  dailyBoxOfficeBox.classList.remove("placeholder-glow");
+  dailyBoxOfficeBox.classList.remove('placeholder-glow');
   dailyBoxOfficeTargetDate.innerText = `${year}년 ${month}월 ${day}일 (${dayOfWeek}) 기준`;
-  dailyBoxOfficeTargetDate.classList.remove("placeholder");
+  dailyBoxOfficeTargetDate.classList.remove('placeholder');
 }
 
 function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails) {
@@ -160,15 +160,15 @@ function getDailyBoxOfficeHTML(kobisDailyBoxOffice, kmdbMovieDetails) {
 
 // now playing
 async function setNowPlaying() {
-  const nowPlayingBox = document.querySelector("#now-playing-box");
+  const nowPlayingBox = document.querySelector('#now-playing-box');
   const nowPlayingTargetDate = document.querySelector(
-    "#now-playing-target-date"
+    '#now-playing-target-date'
   );
   const kobisNowPlayings = await fetchKobisNowPlayings(KOBIS_MOVIE_LIST_URL);
   const [year, month, day] = getYearMonthDay(today);
   const dayOfWeek = getDayOfWeek(today.getDay());
 
-  let nowPlayingHTML = "";
+  let nowPlayingHTML = '';
   for (const kobisNowPlaying of kobisNowPlayings) {
     const movieNm = kobisNowPlaying.movieNm;
     const releaseDte = kobisNowPlaying.releaseDte;
@@ -181,7 +181,7 @@ async function setNowPlaying() {
 
   nowPlayingBox.innerHTML = nowPlayingHTML;
   nowPlayingTargetDate.innerText = `${year}년 ${month}월 ${day}일 (${dayOfWeek}) 기준`;
-  nowPlayingTargetDate.classList.remove("placeholder");
+  nowPlayingTargetDate.classList.remove('placeholder');
 }
 
 function getNowPlayingHTML(kobisNowPlaying, kmdbMovieDetails) {
@@ -222,11 +222,11 @@ function getNowPlayingHTML(kobisNowPlaying, kmdbMovieDetails) {
 
 // upcoming
 async function setUpComing() {
-  const upcomingBox = document.querySelector("#upcoming-box");
-  const upcomingTargetYear = document.querySelector("#upcoming-target-year");
+  const upcomingBox = document.querySelector('#upcoming-box');
+  const upcomingTargetYear = document.querySelector('#upcoming-target-year');
   const kobisUpcomings = await fetchKobisUpcomings(KOBIS_MOVIE_LIST_URL);
 
-  let upcomingHTML = "";
+  let upcomingHTML = '';
   for (const kobisUpcoming of kobisUpcomings) {
     const movieNm = kobisUpcoming.movieNm;
     const releaseDte = kobisUpcoming.releaseDte;
@@ -239,7 +239,7 @@ async function setUpComing() {
 
   upcomingBox.innerHTML = upcomingHTML;
   upcomingTargetYear.innerText = `${year}년 ~ ${year + 1}년 기준`;
-  upcomingTargetYear.classList.remove("placeholder");
+  upcomingTargetYear.classList.remove('placeholder');
 }
 
 function getUpcomingHTML(kobisUpcoming, kmdbMovieDetails) {
@@ -290,7 +290,7 @@ async function fetchKobisDailyBoxOffices(url) {
   const json = await getJson(url);
   const dataProcessing = json.boxOfficeResult.dailyBoxOfficeList.map(
     (movie) => {
-      const [year, month, day] = movie.openDt.split("-");
+      const [year, month, day] = movie.openDt.split('-');
       movie.releaseDte = `${year}${month}${day}`;
       return movie;
     }
@@ -303,7 +303,7 @@ async function fetchKobisWeeklyBoxOffices(url) {
   const json = await getJson(url);
   const dataProcessing = json.boxOfficeResult.weeklyBoxOfficeList.map(
     (movie) => {
-      const [year, month, day] = movie.openDt.split("-");
+      const [year, month, day] = movie.openDt.split('-');
       movie.releaseDte = `${year}${month}${day}`;
 
       return movie;
@@ -318,7 +318,7 @@ async function fetchKobisNowPlayings(url) {
   const dataProcessing = json.movieListResult.movieList
     .filter(
       (movie) =>
-        movie.prdtStatNm === "개봉" && movie.genreAlt !== "성인물(에로)"
+        movie.prdtStatNm === '개봉' && movie.genreAlt !== '성인물(에로)'
     )
     .sort((m1, m2) => m2.openDt - m1.openDt)
     .slice(0, 5)
@@ -341,7 +341,7 @@ async function fetchKobisUpcomings(url) {
   const dataProcessing = json.movieListResult.movieList
     .filter(
       (movie) =>
-        movie.prdtStatNm === "개봉예정" && movie.genreAlt !== "성인물(에로)"
+        movie.prdtStatNm === '개봉예정' && movie.genreAlt !== '성인물(에로)'
     )
     .sort((m1, m2) => m2.openDt - m1.openDt)
     .slice(0, 5)
@@ -362,10 +362,10 @@ async function fetchKobisUpcomings(url) {
 async function fetchKmdbMovieDetails(url) {
   const json = await getJson(url);
   const dataProcessing = json.Data[0].Result.map((movie) => {
-    const posters = movie.posters.replaceAll("http", "https").split("|");
+    const posters = movie.posters.replaceAll('http', 'https').split('|');
     let firstPoster = posters[0];
-    if (firstPoster === "") {
-      firstPoster = "images/xbox.png";
+    if (firstPoster === '') {
+      firstPoster = 'images/xbox.png';
     }
     posters[0] = firstPoster;
     movie.posters = posters;

@@ -1,33 +1,32 @@
 // url parameter
 const params = new URL(location).searchParams;
-const movieId = encodeURI(params.get("movieId"));
-const movieSeq = encodeURI(params.get("movieSeq"));
+const movieId = encodeURI(params.get('movieId'));
+const movieSeq = encodeURI(params.get('movieSeq'));
 
 // kmdb api
-const KMDB_API_KEY = "077QYNU9KT03C64KE480";
+const KMDB_API_KEY = '077QYNU9KT03C64KE480';
 const KMDB_BASE_UTL =
-  "https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp";
+  'https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp';
 const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&movieId=${movieId}&movieSeq=${movieSeq}`;
 
 // main logic
 setMovieDetails();
 
-// movie details
 async function setMovieDetails() {
-  const poster = document.querySelector("#poster");
-  const titlekor = document.querySelector("#title-kor");
-  const titleEn = document.querySelector("#title-en");
-  const releaseDate = document.querySelector("#release-date");
-  const company = document.querySelector("#company");
-  const type = document.querySelector("#type");
-  const rating = document.querySelector("#rating");
-  const showTime = document.querySelector("#show-time");
-  const nation = document.querySelector("#nation");
-  const director = document.querySelector("#director");
-  const genre = document.querySelector("#genre");
-  const plotText = document.querySelector("#plot-text");
-  const stillCutBox = document.querySelector("#still-cut-box");
-  const videoBox = document.querySelector("#video-box");
+  const poster = document.querySelector('#poster');
+  const titlekor = document.querySelector('#title-kor');
+  const titleEn = document.querySelector('#title-en');
+  const releaseDate = document.querySelector('#release-date');
+  const company = document.querySelector('#company');
+  const type = document.querySelector('#type');
+  const rating = document.querySelector('#rating');
+  const showTime = document.querySelector('#show-time');
+  const nation = document.querySelector('#nation');
+  const director = document.querySelector('#director');
+  const genre = document.querySelector('#genre');
+  const plotText = document.querySelector('#plot-text');
+  const stillCutBox = document.querySelector('#still-cut-box');
+  const videoBox = document.querySelector('#video-box');
   const kmdbMovieDetails = await fetchKmdbMovieDetails(KMDB_MOVIE_DETAILS_URL);
 
   if (kmdbMovieDetails === undefined) {
@@ -37,45 +36,45 @@ async function setMovieDetails() {
   const kmdbMovieDetail = kmdbMovieDetails[0];
 
   poster.src = kmdbMovieDetail.posters[0];
-  poster.classList.remove("placeholder");
+  poster.classList.remove('placeholder');
 
   titlekor.innerText = kmdbMovieDetail.title;
-  titlekor.classList.remove("placeholder");
+  titlekor.classList.remove('placeholder');
 
   titleEn.innerText = kmdbMovieDetail.titleEng;
-  titleEn.classList.remove("placeholder");
+  titleEn.classList.remove('placeholder');
 
   releaseDate.innerText = kmdbMovieDetail.repRlsDate;
-  releaseDate.classList.remove("placeholder");
+  releaseDate.classList.remove('placeholder');
 
   type.innerText = kmdbMovieDetail.type;
-  type.classList.remove("placeholder");
+  type.classList.remove('placeholder');
 
   rating.innerText = kmdbMovieDetail.rating;
-  rating.classList.remove("placeholder");
+  rating.classList.remove('placeholder');
 
   showTime.innerText = kmdbMovieDetail.runtime;
-  showTime.classList.remove("placeholder");
+  showTime.classList.remove('placeholder');
 
   nation.innerText = kmdbMovieDetail.nation;
-  nation.classList.remove("placeholder");
+  nation.classList.remove('placeholder');
 
   director.innerText = kmdbMovieDetail.directors.director[0].directorNm;
-  director.classList.remove("placeholder");
+  director.classList.remove('placeholder');
 
   genre.innerText = kmdbMovieDetail.genre;
-  genre.classList.remove("placeholder");
+  genre.classList.remove('placeholder');
 
   company.innerText = kmdbMovieDetail.company;
-  company.classList.remove("placeholder");
+  company.classList.remove('placeholder');
 
   plotText.innerText = kmdbMovieDetail.plots.plot[0].plotText;
-  plotText.classList.remove("placeholder");
+  plotText.classList.remove('placeholder');
 
   const stills = kmdbMovieDetail.stlls;
   let stillCutHTML = `<p class="pt-3">스틸컷 결과가 없습니다.</p>`;
   if (stills !== null) {
-    stillCutHTML = "";
+    stillCutHTML = '';
     for (const still of stills) {
       stillCutHTML += `<div class="col pt-3">
                           <div class="card border-0 mx-auto">
@@ -93,7 +92,7 @@ async function setMovieDetails() {
   const vods = kmdbMovieDetail.vods.vod;
   let videoHTML = `<p>영상 결과가 없습니다.</p>`;
   if (vods !== null) {
-    videoHTML = "";
+    videoHTML = '';
     for (const vod of vods) {
       const vodClass = vod.vodClass;
       const vodUrl = vod.vodUrl;
@@ -108,10 +107,9 @@ async function setMovieDetails() {
     }
   }
   videoBox.innerHTML = videoHTML;
-  videoBox.classList.remove("placeholder-glow");
+  videoBox.classList.remove('placeholder-glow');
 }
 
-// fetch
 async function getJson(url) {
   const response = await fetch(url);
 
@@ -133,16 +131,15 @@ async function fetchKmdbMovieDetails(url) {
   return processData;
 }
 
-// util
 function getDataProcessing(json) {
-  return json.Data[0].Result?.filter((movie) => !(movie.repRlsDate === ""))
+  return json.Data[0].Result?.filter((movie) => !(movie.repRlsDate === ''))
     .sort((m1, m2) => m2.repRlsDate - m1.repRlsDate)
     .map((movie) => {
       const title = movie.title;
       movie.title = title
-        .replaceAll("!HS", "")
-        .replaceAll("!HE", "")
-        .replace(":", " : ")
+        .replaceAll('!HS', '')
+        .replaceAll('!HE', '')
+        .replace(':', ' : ')
         .trim();
 
       const repRlsDate = movie.repRlsDate;
@@ -151,10 +148,10 @@ function getDataProcessing(json) {
       const day = repRlsDate.substring(6, 8);
       movie.repRlsDate = `${year}-${month}-${day}`;
 
-      const posters = movie.posters.replaceAll("http", "https").split("|");
+      const posters = movie.posters.replaceAll('http', 'https').split('|');
       let firstPoster = posters[0];
-      if (firstPoster === "") {
-        firstPoster = "images/xbox.png";
+      if (firstPoster === '') {
+        firstPoster = 'images/xbox.png';
       }
       posters[0] = firstPoster;
       movie.posters = posters;
@@ -162,22 +159,22 @@ function getDataProcessing(json) {
       const runtime = movie.runtime;
       movie.runtime = `${runtime}분`;
 
-      let stills = movie.stlls.replaceAll("http", "https").split("|");
+      let stills = movie.stlls.replaceAll('http', 'https').split('|');
       const firstStill = stills[0];
-      if (firstStill === "") {
+      if (firstStill === '') {
         stills = null;
       }
       movie.stlls = stills;
 
       let vods = movie.vods.vod;
       for (const vod of vods) {
-        const vodUrl = vod.vodUrl.replace("trailerPlayPop?pFileNm=", "play/");
+        const vodUrl = vod.vodUrl.replace('trailerPlayPop?pFileNm=', 'play/');
         vod.vodUrl = vodUrl;
       }
       const firstVod = vods[0];
       const vodClass = firstVod.vodClass;
       const vodUrl = firstVod.vodUrl;
-      if (vodClass === "" && vodUrl === "") {
+      if (vodClass === '' && vodUrl === '') {
         vods = null;
       }
       movie.vods.vod = vods;
@@ -187,6 +184,6 @@ function getDataProcessing(json) {
 }
 
 function interceptor() {
-  alert("잘못된 접근입니다.");
+  alert('잘못된 접근입니다.');
   history.back();
 }
