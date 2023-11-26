@@ -85,9 +85,9 @@ async function getJson(url) {
 
 async function fetchKmdbMovieDetails(url) {
   const json = await getJson(url);
-  const dataProcessing = getDataProcessing(json);
+  const data = getDataProcessing(json);
 
-  return dataProcessing;
+  return data;
 }
 
 // util

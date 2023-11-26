@@ -288,34 +288,31 @@ async function getJson(url) {
 
 async function fetchKobisDailyBoxOffices(url) {
   const json = await getJson(url);
-  const dataProcessing = json.boxOfficeResult.dailyBoxOfficeList.map(
-    (movie) => {
-      const [year, month, day] = movie.openDt.split('-');
-      movie.releaseDte = `${year}${month}${day}`;
-      return movie;
-    }
-  );
+  const data = json.boxOfficeResult.dailyBoxOfficeList.map((movie) => {
+    const [year, month, day] = movie.openDt.split('-');
+    movie.releaseDte = `${year}${month}${day}`;
 
-  return dataProcessing;
+    return movie;
+  });
+
+  return data;
 }
 
 async function fetchKobisWeeklyBoxOffices(url) {
   const json = await getJson(url);
-  const dataProcessing = json.boxOfficeResult.weeklyBoxOfficeList.map(
-    (movie) => {
-      const [year, month, day] = movie.openDt.split('-');
-      movie.releaseDte = `${year}${month}${day}`;
+  const data = json.boxOfficeResult.weeklyBoxOfficeList.map((movie) => {
+    const [year, month, day] = movie.openDt.split('-');
+    movie.releaseDte = `${year}${month}${day}`;
 
-      return movie;
-    }
-  );
+    return movie;
+  });
 
-  return dataProcessing;
+  return data;
 }
 
 async function fetchKobisNowPlayings(url) {
   const json = await getJson(url);
-  const dataProcessing = json.movieListResult.movieList
+  const data = json.movieListResult.movieList
     .filter(
       (movie) =>
         movie.prdtStatNm === '개봉' && movie.genreAlt !== '성인물(에로)'
@@ -333,12 +330,12 @@ async function fetchKobisNowPlayings(url) {
       return movie;
     });
 
-  return dataProcessing;
+  return data;
 }
 
 async function fetchKobisUpcomings(url) {
   const json = await getJson(url);
-  const dataProcessing = json.movieListResult.movieList
+  const data = json.movieListResult.movieList
     .filter(
       (movie) =>
         movie.prdtStatNm === '개봉예정' && movie.genreAlt !== '성인물(에로)'
@@ -356,12 +353,12 @@ async function fetchKobisUpcomings(url) {
       return movie;
     });
 
-  return dataProcessing;
+  return data;
 }
 
 async function fetchKmdbMovieDetails(url) {
   const json = await getJson(url);
-  const dataProcessing = json.Data[0].Result.map((movie) => {
+  const data = json.Data[0].Result.map((movie) => {
     const posters = movie.posters.replaceAll('http', 'https').split('|');
     let firstPoster = posters[0];
     if (firstPoster === '') {
@@ -373,7 +370,7 @@ async function fetchKmdbMovieDetails(url) {
     return movie;
   });
 
-  return dataProcessing[0];
+  return data[0];
 }
 
 // util
