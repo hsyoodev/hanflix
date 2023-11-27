@@ -5,9 +5,9 @@ const movieSeq = encodeURI(params.get('movieSeq'));
 
 // kmdb api
 const KMDB_API_KEY = '077QYNU9KT03C64KE480';
-const KMDB_BASE_UTL =
+const KMDB_BASE_URL =
   'https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp';
-const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&movieId=${movieId}&movieSeq=${movieSeq}`;
+const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_URL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&movieId=${movieId}&movieSeq=${movieSeq}`;
 
 // main logic
 setMovieDetails();
