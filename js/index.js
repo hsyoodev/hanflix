@@ -4,7 +4,6 @@ const yesterday = new Date();
 const oneWeekAgo = new Date();
 yesterday.setDate(today.getDate() - 1);
 oneWeekAgo.setDate(today.getDate() - 7);
-
 const joinYesterDay = getYearMonthDay(yesterday).join('');
 const joinOneWeekAgo = getYearMonthDay(oneWeekAgo).join('');
 const [year, ,] = getYearMonthDay(today);
@@ -62,18 +61,15 @@ function getWeeklyBoxOfficeHTML(kobisWeeklyBoxOffice, kmdbMovieDetails) {
   const movieSeq = kmdbMovieDetails.movieSeq;
   const poster = kmdbMovieDetails.posters[0];
 
-  const start = (oneWeekAgo.getDate() % 7) + 1;
-  const end = (7 - oneWeekAgo.getDay()) % 7;
-  const startDate = new Date();
-  const endDate = new Date();
+  const dayOfWeek = today.getDay();
+  const numDay = dayOfWeek == 0 ? 7 : dayOfWeek;
+  const lastMonday = new Date(today - (numDay + 7 - 1) * 24 * 60 * 60 * 1000);
+  const lastSunday = new Date(today - numDay * 24 * 60 * 60 * 1000);
 
-  startDate.setDate(oneWeekAgo.getDate() - start);
-  endDate.setDate(oneWeekAgo.getDate() + end);
-
-  const [startYear, startMonth, startDay] = getYearMonthDay(startDate);
-  const [endYear, endMonth, endDay] = getYearMonthDay(endDate);
-  const startDayOfWeek = getDayOfWeek(startDate.getDay());
-  const endDayOfWeek = getDayOfWeek(endDate.getDay());
+  const [startYear, startMonth, startDay] = getYearMonthDay(lastMonday);
+  const [endYear, endMonth, endDay] = getYearMonthDay(lastSunday);
+  const startDayOfWeek = getDayOfWeek(lastMonday.getDay());
+  const endDayOfWeek = getDayOfWeek(lastSunday.getDay());
 
   return `<div class="carousel-item h-100 my-2 ${isActive ? 'active' : ''}">
               <img
@@ -105,8 +101,9 @@ async function setDailyBoxOffice() {
   for (const kobisDailyBoxOffice of kobisDailyBoxOffices) {
     const movieNm = kobisDailyBoxOffice.movieNm;
     const releaseDte = kobisDailyBoxOffice.releaseDte;
+    const prdtYear = kobisDailyBoxOffice.openDt.split('-')[0];
     const kmdbMovieDetails = await fetchKmdbMovieDetails(
-      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&releaseDte=${releaseDte}`
+      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&createDte=${prdtYear}&releaseDte=${releaseDte}&releaseDts=${releaseDte}`
     );
 
     dailyBoxOfficeHTML += getDailyBoxOfficeHTML(
@@ -230,8 +227,9 @@ async function setUpComing() {
   for (const kobisUpcoming of kobisUpcomings) {
     const movieNm = kobisUpcoming.movieNm;
     const releaseDte = kobisUpcoming.releaseDte;
+    const prdtYear = kobisUpcoming.prdtYear;
     const kmdbMovieDetails = await fetchKmdbMovieDetails(
-      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&releaseDts=${releaseDte}&releaseDte=${releaseDte}`
+      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&createDte=${prdtYear}&releaseDte=${releaseDte}`
     );
 
     upcomingHTML += getUpcomingHTML(kobisUpcoming, kmdbMovieDetails);
@@ -315,7 +313,8 @@ async function fetchKobisNowPlayings(url) {
   const data = json.movieListResult.movieList
     .filter(
       (movie) =>
-        movie.prdtStatNm === '개봉' && movie.genreAlt !== '성인물(에로)'
+        movie.prdtStatNm === '개봉' &&
+        !(movie.repNationNm === '일본' || movie.repGenreNm === '성인물(에로)')
     )
     .sort((m1, m2) => m2.openDt - m1.openDt)
     .slice(0, 5)
@@ -338,7 +337,8 @@ async function fetchKobisUpcomings(url) {
   const data = json.movieListResult.movieList
     .filter(
       (movie) =>
-        movie.prdtStatNm === '개봉예정' && movie.genreAlt !== '성인물(에로)'
+        movie.prdtStatNm === '개봉예정' &&
+        !(movie.repNationNm === '일본' || movie.repGenreNm === '성인물(에로)')
     )
     .sort((m1, m2) => m2.openDt - m1.openDt)
     .slice(0, 5)
@@ -376,9 +376,14 @@ async function fetchKmdbMovieDetails(url) {
 // util
 function getYearMonthDay(date) {
   const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  if (month < 10) {
+    month = '0' + month;
+  }
+  if (day < 10) {
+    day = '0' + day;
+  }
   return [year, month, day];
 }
 
