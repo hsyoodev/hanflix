@@ -41,8 +41,9 @@ async function setWeeklyBoxOffice() {
   for (const kobisWeeklyBoxOffice of kobisWeeklyBoxOffices) {
     const movieNm = kobisWeeklyBoxOffice.movieNm;
     const releaseDte = kobisWeeklyBoxOffice.releaseDte;
+    const prdtYear = kobisWeeklyBoxOffice.openDt.split('-')[0];
     const kmdbMovieDetails = await fetchKmdbMovieDetails(
-      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&releaseDte=${releaseDte}`
+      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&createDte=${prdtYear}&releaseDte=${releaseDte}&releaseDts=${releaseDte}`
     );
 
     weeklyBoxOfficeHTML += getWeeklyBoxOfficeHTML(
