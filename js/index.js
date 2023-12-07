@@ -171,7 +171,7 @@ async function setNowPlaying() {
     const movieNm = kobisNowPlaying.movieNm;
     const releaseDte = kobisNowPlaying.releaseDte;
     const kmdbMovieDetails = await fetchKmdbMovieDetails(
-      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&releaseDte=${releaseDte}`
+      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&releaseDte=${releaseDte}&releaseDts=${releaseDte}`
     );
 
     nowPlayingHTML += getNowPlayingHTML(kobisNowPlaying, kmdbMovieDetails);
