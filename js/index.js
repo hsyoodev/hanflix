@@ -171,7 +171,7 @@ async function setNowPlaying() {
     const movieNm = kobisNowPlaying.movieNm;
     const releaseDte = kobisNowPlaying.releaseDte;
     const kmdbMovieDetails = await fetchKmdbMovieDetails(
-      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&releaseDte=${releaseDte}&releaseDts=${releaseDte}`
+      `${KMDB_MOVIE_DETAILS_URL}&title=${movieNm}&releaseDte=${releaseDte}`
     );
 
     nowPlayingHTML += getNowPlayingHTML(kobisNowPlaying, kmdbMovieDetails);
@@ -315,7 +315,11 @@ async function fetchKobisNowPlayings(url) {
     .filter(
       (movie) =>
         movie.prdtStatNm === '개봉' &&
-        !(movie.repNationNm === '일본' || movie.repGenreNm === '성인물(에로)')
+        !(
+          movie.repNationNm === '일본' ||
+          movie.repGenreNm === '성인물(에로)' ||
+          movie.genreAlt.includes('성인물(에로)')
+        )
     )
     .sort((m1, m2) => m2.openDt - m1.openDt)
     .slice(0, 5)
