@@ -22,7 +22,7 @@ const KOBIS_MOVIE_LIST_URL = `${KOBIS_BASE_URL}/movie/searchMovieList.json?&key=
 const KMDB_API_KEY = '077QYNU9KT03C64KE480';
 const KMDB_BASE_UTL =
   'https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp';
-const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}`;
+const KMDB_MOVIE_DETAILS_URL = `${KMDB_BASE_UTL}?collection=kmdb_new2&ServiceKey=${KMDB_API_KEY}&sort=prodYear,1`;
 
 // main logic
 setWeeklyBoxOffice();
