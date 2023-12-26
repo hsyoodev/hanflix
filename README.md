@@ -2,6 +2,7 @@
 
 간단한 영화 정보를 제공하는 반응형 웹 사이트입니다.
 
+Workflows : https://github.com/users/hsyoodev/projects/1/views/1
 Website : https://hsyoodev.github.io/hanflix
 
 ![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/aafaf0b7-7735-4a64-abcf-97499d4b32be)
