@@ -29,7 +29,7 @@ Workflows : https://github.com/users/hsyoodev/projects/1/views/1
 
 ![Static Badge](https://img.shields.io/badge/-kobis-%239999FF?style=for-the-badge&labelColor=abcdef) ![Static Badge](https://img.shields.io/badge/-kmdb-%23512BD4?style=for-the-badge)
 
-## 📁 Project Structure
+## 📁 프로젝트 구조
 
 ```bash
 common: 공통
@@ -55,7 +55,7 @@ search : 검색결과
  ┗ 📜search.html
 ```
 
-## 👀 Main Feature
+## 👀 주요 기능
 
 ### 영화 제공
 
