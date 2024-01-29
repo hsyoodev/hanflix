@@ -4,8 +4,7 @@
 
 ![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/aafaf0b7-7735-4a64-abcf-97499d4b32be)
 
-Website : https://hsyoodev.github.io/hanflix  
-Workflows : https://github.com/users/hsyoodev/projects/1/views/1
+Demo👉 https://hsyoodev.github.io/hanflix  
 
 ## ⛏️ 개발 환경
 
