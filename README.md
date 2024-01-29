@@ -8,7 +8,7 @@ Demo👉 https://hsyoodev.github.io/hanflix
 
 ## ⛏️ 개발 환경
 
-### FrontEnd
+### Frontend
 
 ![Static Badge](https://img.shields.io/badge/-html5-%23E34F26?style=for-the-badge&logo=html5&logoColor=white) ![Static Badge](https://img.shields.io/badge/-css3-%231572B6?style=for-the-badge&logo=css3&logoColor=white) ![Static Badge](<https://img.shields.io/badge/-javascript(es6)-%23F7DF1E?style=for-the-badge&logo=javascript&logoColor=white>)
 
