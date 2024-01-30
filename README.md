@@ -4,7 +4,7 @@
 
 ![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/aafaf0b7-7735-4a64-abcf-97499d4b32be)
 
-Demo👉 https://hsyoodev.github.io/hanflix  
+Demo👉 https://hsyoodev.github.io/hanflix
 
 ## ⛏️ 개발 환경
 
@@ -58,18 +58,18 @@ search : 검색결과
 
 ### 영화 제공
 
-국내 주간/일별 박스오피스, 개봉작, 개봉 예정작을 제공하고 있습니다.
+* 국내 주간/일별 박스오피스, 개봉작, 개봉 예정작을 제공하고 있습니다.
 
-![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/ecb34256-ecbf-4458-8d59-4a226a3e1ea8)
+  ![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/ecb34256-ecbf-4458-8d59-4a226a3e1ea8)
 
 ### 영화 상세정보 제공
 
-개봉일, 상영시간, 줄거리, 스틸컷, 예고편 등을 제공합니다.
+* 개봉일, 상영시간, 줄거리, 스틸컷, 예고편 등을 제공합니다.
 
-![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/05ec0c93-c1ca-4660-94a2-9633518012ac)
+  ![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/05ec0c93-c1ca-4660-94a2-9633518012ac)
 
 ### 영화 검색결과 제공
 
-검색어와 관련된 영화를 제공합니다.
+* 검색어와 관련된 영화를 제공합니다.
 
-![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/75ed9557-0f71-4f1a-9f9a-81162a09f5bd)
+  ![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/75ed9557-0f71-4f1a-9f9a-81162a09f5bd)
