@@ -1,6 +1,6 @@
-# 🍿 Hanflix
+# 🍿 Hanflix / 영화 정보 서비스
 
-영화 정보 제공 서비스
+사용자에게 영화 정보를 제공하는 웹 서비스
 
 ![Alt text](https://github.com/hsyoodev/hanflix/assets/102946491/aafaf0b7-7735-4a64-abcf-97499d4b32be)
 
