@@ -6,7 +6,7 @@
 
 Demo👉 https://hsyoodev.github.io/hanflix
 
-## ⛏️ 기술 스텍텍
+## ⛏️ 기술 스텍
 
 ### Frontend
 
